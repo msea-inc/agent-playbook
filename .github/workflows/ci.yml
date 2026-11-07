@@ -21,6 +21,8 @@ jobs:
           node-version: 22
       - name: Unit tests
         run: node --test 'tests/**/*.test.mjs'
+      - name: Plugins grant nothing
+        run: node scripts/checks/plugin-audit.mjs
 
   public-content:
     runs-on: ubuntu-latest
