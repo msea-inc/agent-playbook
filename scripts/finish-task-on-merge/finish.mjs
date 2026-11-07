@@ -10,6 +10,7 @@
 //   tracker may already have accepted the write. This is at-least-once with reconciliation, not exactly-once: if the
 //   tracker's reads lag behind its writes, a duplicate is still possible, and the run says so in its log.
 //
+//   node finish.mjs settings  checks the caller's settings before anything is read
 //   node finish.mjs merged    reads its inputs from the environment (see the workflow)
 import { appendFileSync, readFileSync } from 'node:fs';
 import { pathToFileURL } from 'node:url';
@@ -150,6 +151,21 @@ async function findRevertSubtask(api, parentId, key) {
   return null;
 }
 
+// Organisation-level variables and secrets don't reach private repositories on every GitHub plan, which is the
+// usual reason a setting the caller "already has" arrives empty.
+const SCOPE_HINT = "If it's set for the organisation, check that it reaches this repository: on some GitHub plans organisation " +
+  'variables and secrets reach only public repositories, so set it on the repository instead.';
+const OWNER_NAME = /^[A-Za-z0-9](?:[A-Za-z0-9]|-(?=[A-Za-z0-9])){0,38}\/[A-Za-z0-9._-]{1,100}$/;
+
+/** Why the caller's settings can't work, saying what to set, or null when they look right. */
+export function settingsProblem(env) {
+  const config = String(env.CONFIG_REPOSITORY ?? '').trim();
+  if (!config) return `config-repository is empty. Pass the config repository as Owner/Name. ${SCOPE_HINT}`;
+  if (!OWNER_NAME.test(config)) return `config-repository '${config}' isn't Owner/Name, e.g. org-a/config, without a URL.`;
+  if (!env.CLICKUP_TOKEN) return `CLICKUP_TOKEN is empty. Pass it by name in the calling job's secrets. ${SCOPE_HINT}`;
+  return null;
+}
+
 export async function merged(env) {
   const doneStatus = env.DONE_STATUS || 'done';
   const repository = env.REPOSITORY;
@@ -215,9 +231,16 @@ function summary(env, record) {
 }
 
 if (import.meta.url === pathToFileURL(process.argv[1] ?? '').href) {
-  if (process.argv[2] !== 'merged') {
-    console.error('Usage: node finish.mjs merged');
+  const mode = process.argv[2];
+  if (mode !== 'merged' && mode !== 'settings') {
+    console.error('Usage: node finish.mjs settings|merged');
     process.exit(2);
+  }
+  if (mode === 'settings') {
+    const problem = settingsProblem(process.env);
+    if (problem) { console.error(`::error::${problem}`); process.exit(1); }
+    console.log('The caller passed config-repository and CLICKUP_TOKEN.');
+    process.exit(0);
   }
   try {
     await merged(process.env);
