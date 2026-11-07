@@ -31,6 +31,9 @@ node scripts/checks/public-content.mjs files
 node scripts/checks/public-content.mjs pins
 node scripts/checks/public-content.mjs merges
 node scripts/checks/plugin-audit.mjs
+node scripts/skills/manifest.mjs check
 ```
+
+After changing anything under `plugins/`, regenerate the manifest with `node scripts/skills/manifest.mjs write` and commit it.
 
 CI runs the same checks, plus `pr-text` on the PR's description and commits.
