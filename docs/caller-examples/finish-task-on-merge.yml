@@ -1,0 +1,23 @@
+# Example caller for Finish task on merge. Copy it to .github/workflows/ in your repository, replace the SHA with a
+# release's full commit SHA, and set the organisation variable CONFIG_REPOSITORY to the config repository's Owner/Name.
+name: Finish task on merge
+
+on:
+  pull_request:
+    types: [closed]
+
+permissions: {}
+
+jobs:
+  finish:
+    uses: msea-inc/agent-playbook/.github/workflows/finish-task-on-merge.yml@0000000000000000000000000000000000000000 # vX.Y.Z
+    permissions:
+      contents: read
+      id-token: write
+    with:
+      config-repository: ${{ vars.CONFIG_REPOSITORY }}
+      clickup-team-id: ${{ vars.CLICKUP_TEAM_ID }}
+    secrets:
+      CLICKUP_TOKEN: ${{ secrets.CLICKUP_TOKEN }}
+      # Read access to the config repository, when it's private.
+      CONFIG_TOKEN: ${{ secrets.CONFIG_TOKEN }}

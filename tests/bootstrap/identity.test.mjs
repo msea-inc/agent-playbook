@@ -84,3 +84,13 @@ test('the checkout check accepts only the expected commit', () => {
   assert.equal(checkoutMatches(SHA, OTHER_SHA).ok, false);
   assert.equal(checkoutMatches('main', 'main').ok, false);
 });
+
+test('every playbook workflow starts with the same bootstrap', async () => {
+  const { readdirSync } = await import('node:fs');
+  const dir = join(root, '.github/workflows');
+  for (const file of readdirSync(dir).filter(name => name !== 'ci.yml')) {
+    const text = readFileSync(join(dir, file), 'utf8');
+    assert.ok(text.includes('# bootstrap:begin'), `${file} has no bootstrap`);
+    assert.equal(text.split('# bootstrap:begin')[1].split('# bootstrap:end')[0], step, `${file}'s bootstrap differs from bootstrap-proof.yml`);
+  }
+});
