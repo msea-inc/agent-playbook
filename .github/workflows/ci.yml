@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, edited]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 22
+      - name: Unit tests
+        run: node --test 'tests/**/*.test.mjs'
+
+  public-content:
+    runs-on: ubuntu-latest
+    env:
+      CONTENT_DENY: ${{ vars.CONTENT_DENY }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 22
+      - name: Files and fixtures are generic
+        run: node scripts/checks/public-content.mjs files
+      - name: Every action is pinned to a full SHA
+        run: node scripts/checks/public-content.mjs pins
+      - name: Nothing calls a merge API
+        run: node scripts/checks/public-content.mjs merges
+      - name: The PR description and commit messages are generic
+        if: github.event_name == 'pull_request'
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: node scripts/checks/public-content.mjs pr-text "$BASE_SHA"

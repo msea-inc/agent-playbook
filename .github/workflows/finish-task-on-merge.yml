@@ -1,0 +1,157 @@
+# Finish task on merge. When a person merges a pull request into the caller's default branch, moves the task its title
+# names ("feat(<TaskID>): …") to done, comments the PR on it, and finishes the parent once every subtask is done. Only a
+# task whose list the config repository links to the caller's own repository is touched. See
+# scripts/finish-task-on-merge/finish.mjs, and docs/caller-examples/finish-task-on-merge.yml for the caller.
+#
+# Caller requirements:
+#   - pin this workflow to a full commit SHA, with the release in a comment;
+#   - trigger on `pull_request: types: [closed]`;
+#   - grant `contents: read` and `id-token: write`;
+#   - pass CLICKUP_TOKEN, and CONFIG_TOKEN when the config repository is private.
+name: Finish task on merge
+
+on:
+  workflow_call:
+    inputs:
+      config-repository:
+        description: The config repository holding the space files, as Owner/Name.
+        type: string
+        required: true
+      config-ref:
+        description: The branch or commit of the config repository to read.
+        type: string
+        default: main
+      spaces-path:
+        description: The folder in the config repository holding one YAML file per space.
+        type: string
+        default: spaces
+      done-status:
+        description: The tracker's done status.
+        type: string
+        default: done
+      clickup-team-id:
+        description: The ClickUp workspace. Leave empty when the token sees only one.
+        type: string
+        default: ''
+    secrets:
+      CLICKUP_TOKEN:
+        required: true
+      CONFIG_TOKEN:
+        description: Read access to the config repository. Not needed when it's public.
+        required: false
+    outputs:
+      library-sha:
+        description: The playbook commit that ran.
+        value: ${{ jobs.finish.outputs.library-sha }}
+
+permissions: {}
+
+jobs:
+  finish:
+    if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == github.event.repository.default_branch
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    # One run at a time per PR; a second run waits instead of cancelling the first.
+    concurrency:
+      group: finish-task-on-merge-${{ github.repository_id }}-pr-${{ github.event.pull_request.number }}
+      cancel-in-progress: false
+    permissions:
+      contents: read
+      id-token: write
+    outputs:
+      library-sha: ${{ steps.identity.outputs.sha }}
+    steps:
+      # The same inline bootstrap as bootstrap-proof.yml; tests/bootstrap/identity.test.mjs checks both copies match.
+      - name: Check which playbook commit is running
+        id: identity
+        shell: bash
+        env:
+          EXPECTED_REPOSITORY: msea-inc/agent-playbook
+        run: |
+          # bootstrap:begin
+          set -euo pipefail
+          if [ -z "${ACTIONS_ID_TOKEN_REQUEST_URL:-}" ] || [ -z "${ACTIONS_ID_TOKEN_REQUEST_TOKEN:-}" ]; then
+            echo "::error::The caller didn't grant id-token: write, so this workflow can't tell which playbook commit it is. Add 'permissions: { contents: read, id-token: write }' to the calling job."
+            exit 1
+          fi
+          response=$(curl -sSf -H "Authorization: Bearer ${ACTIONS_ID_TOKEN_REQUEST_TOKEN}" "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=agent-playbook")
+          token=$(printf '%s' "$response" | jq -r '.value // empty')
+          if [ -z "$token" ]; then
+            echo "::error::GitHub returned no OIDC token, so this workflow can't tell which playbook commit it is."
+            exit 1
+          fi
+          echo "::add-mask::$token"
+          payload=$(printf '%s' "$token" | cut -d. -f2 | tr '_-' '/+')
+          while [ $(( ${#payload} % 4 )) -ne 0 ]; do payload="${payload}="; done
+          claims=$(printf '%s' "$payload" | base64 -d)
+          workflow_ref=$(printf '%s' "$claims" | jq -r '.job_workflow_ref // empty')
+          workflow_sha=$(printf '%s' "$claims" | jq -r '.job_workflow_sha // empty')
+          repository="${workflow_ref%%/.github/workflows/*}"
+          ref="${workflow_ref##*@}"
+          if [ "${repository,,}" != "${EXPECTED_REPOSITORY,,}" ]; then
+            echo "::error::This run's workflow comes from '${repository}', not ${EXPECTED_REPOSITORY}, so it was refused."
+            exit 1
+          fi
+          if ! [[ "$ref" =~ ^[0-9a-f]{40}$ ]]; then
+            echo "::error::The caller referenced the playbook at '${ref}'. Pin it to a full 40-character commit SHA, with the release in a comment, e.g. @<sha> # v0.1.0."
+            exit 1
+          fi
+          if [ "$ref" != "$workflow_sha" ]; then
+            echo "::error::The workflow's ref (${ref}) and its commit (${workflow_sha}) disagree, so it was refused."
+            exit 1
+          fi
+          echo "repository=${EXPECTED_REPOSITORY}" >> "$GITHUB_OUTPUT"
+          echo "sha=${workflow_sha}" >> "$GITHUB_OUTPUT"
+          echo "Running ${EXPECTED_REPOSITORY} at ${workflow_sha}."
+          # bootstrap:end
+
+      - name: Check out the playbook at that commit
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: ${{ steps.identity.outputs.repository }}
+          ref: ${{ steps.identity.outputs.sha }}
+          path: .playbook
+          persist-credentials: false
+
+      - name: Check out the config repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: ${{ inputs.config-repository }}
+          ref: ${{ inputs.config-ref }}
+          path: .config
+          token: ${{ secrets.CONFIG_TOKEN || github.token }}
+          persist-credentials: false
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 22
+          package-manager-cache: false
+
+      - name: Move the task to done
+        env:
+          # Event fields are passed as data, never interpolated into the script.
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          MERGE_SHA: ${{ github.event.pull_request.merge_commit_sha }}
+          REPOSITORY: ${{ github.repository }}
+          REPOSITORY_ID: ${{ github.repository_id }}
+          GITHUB_TOKEN: ${{ github.token }}
+          CLICKUP_TOKEN: ${{ secrets.CLICKUP_TOKEN }}
+          CLICKUP_TEAM_ID: ${{ inputs.clickup-team-id }}
+          CONFIG_REPOSITORY: ${{ inputs.config-repository }}
+          SPACES_PATH: ${{ inputs.spaces-path }}
+          DONE_STATUS: ${{ inputs.done-status }}
+          LIBRARY_SHA: ${{ steps.identity.outputs.sha }}
+          SPACES_FILE: ${{ runner.temp }}/spaces.jsonl
+        run: |
+          set -euo pipefail
+          if [ -z "${CLICKUP_TOKEN}" ]; then
+            echo "::error::CLICKUP_TOKEN is empty. Pass it by name in the calling job's secrets."
+            exit 1
+          fi
+          case "$SPACES_PATH" in *..*|/*) echo "::error::spaces-path must be a folder inside the config repository."; exit 1 ;; esac
+          export CONFIG_SHA=$(git -C .config rev-parse HEAD)
+          # One JSON line per space file; files starting with _ (templates) are skipped.
+          yq -o=json -I=0 '{"file": filename, "space": .space.name, "lists": .lists}' .config/"$SPACES_PATH"/[!_]*.yml > "$SPACES_FILE"
+          node .playbook/scripts/finish-task-on-merge/finish.mjs merged

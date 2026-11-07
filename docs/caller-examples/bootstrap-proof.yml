@@ -1,0 +1,15 @@
+# Example caller for the bootstrap proof. Copy it to .github/workflows/ in your repository and
+# replace the SHA with a release's full commit SHA.
+name: Playbook bootstrap proof
+
+on:
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  proof:
+    uses: msea-inc/agent-playbook/.github/workflows/bootstrap-proof.yml@0000000000000000000000000000000000000000 # vX.Y.Z
+    permissions:
+      contents: read
+      id-token: write
