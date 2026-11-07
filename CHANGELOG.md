@@ -4,7 +4,19 @@ Each release says what changed, whether it's compatible, any configuration a cal
 
 ## Unreleased
 
-- **Fixed:** `finish-task-on-merge.yml` checks the caller's settings before it reads anything. An empty or malformed `config-repository`, or an empty `CLICKUP_TOKEN`, now stops the run with what to set, instead of checking out the caller's own repository as the config. The message also says that organisation variables and secrets don't reach private repositories on some GitHub plans. Compatible: callers change nothing.
+## 0.2.0 (2026-11-07)
+
+Compatible: callers of `finish-task-on-merge.yml` change nothing.
+
+- **Added:** the `playbook` Claude Code plugin and a marketplace at the repository root, with two skills: `working-style` (how agents work with the person) and `code-review` (the general two-axis review method). Load it with `--plugin-dir` from a checkout at a pinned commit; see `docs/onboarding.md`.
+- **Added:** `manifest/skills.json` (every skill's version and file hashes), `scripts/skills/verify.mjs` (checks the skills on disk at the pinned commit, and fails as `skill_unavailable`) and `scripts/skills/load-report.mjs` (writes `provenance.json`).
+- **Added:** CI audits that a plugin grants nothing (no hooks, servers, commands, tool grants or unsafe scripts), and that the manifest matches the files.
+
+- **Fixed:** `finish-task-on-merge.yml` checks the caller's settings before it reads anything. An empty or malformed `config-repository`, or an empty `CLICKUP_TOKEN`, now stops the run with what to set, instead of checking out the caller's own repository as the config. The message also says that organisation variables and secrets don't reach private repositories on some GitHub plans.
+
+**Configuration:** to load the skills, a caller checks out the playbook at this release's SHA, runs `verify.mjs`, starts Claude Code with `--plugin-dir`, names skills by their full ID, and runs `load-report.mjs` afterwards. See `docs/onboarding.md`.
+
+**Rollback:** revert the caller's pin pull request. A caller that still has its own copy of a moved skill keeps working on `0.1.0`, which has no skills.
 
 ## 0.1.0 (2026-11-07)
 

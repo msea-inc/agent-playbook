@@ -1,0 +1,11 @@
+{
+  "name": "agent-playbook",
+  "owner": { "name": "msea-inc" },
+  "plugins": [
+    {
+      "name": "playbook",
+      "source": "./plugins/playbook",
+      "description": "Generic methods agents use in any project."
+    }
+  ]
+}

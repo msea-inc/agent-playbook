@@ -1,0 +1,29 @@
+{
+  "plugin": "playbook",
+  "version": "0.2.0",
+  "skills": [
+    {
+      "id": "playbook:code-review",
+      "name": "code-review",
+      "version": "1.0.0",
+      "library_compat": 1,
+      "files": {
+        "SKILL.md": "558b13003af7ad67e2ff3b38f91d5d2785a1731f229b85b32e12ffd2cf5a6641",
+        "references/smells.md": "8a3f39e0821bc7e7a633211b0d2f33a209fab8b55e18465d8912bbe2fd003f6c",
+        "regression-cases.md": "58607ee338895425ae5e81d26b69ac8907dfb86bc58def92818b23762b84d15d"
+      },
+      "sha256": "0abb8af693d989f54746975a5bf7b2706e8e8746b2d92bf48eddbe84934f5abe"
+    },
+    {
+      "id": "playbook:working-style",
+      "name": "working-style",
+      "version": "1.0.0",
+      "library_compat": 1,
+      "files": {
+        "SKILL.md": "82548c250c1ab1a963a16a90f944da38eab7002a7c98afa6abbd0f805d3cae98",
+        "regression-cases.md": "06487476b0eba32f8e709973169b8d728cf6b2af9fbde821dd4b8b6c2fa1c087"
+      },
+      "sha256": "bf73e8a03873f7a2f001c993c00b7cf71651b67f22c716aba35925032af8ae8b"
+    }
+  ]
+}

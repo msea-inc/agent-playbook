@@ -21,6 +21,10 @@ jobs:
           node-version: 22
       - name: Unit tests
         run: node --test 'tests/**/*.test.mjs'
+      - name: Plugins grant nothing
+        run: node scripts/checks/plugin-audit.mjs
+      - name: The skills manifest matches the files
+        run: node scripts/skills/manifest.mjs check
 
   public-content:
     runs-on: ubuntu-latest
