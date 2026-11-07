@@ -3,6 +3,7 @@
 ## Versions
 
 - Releases are tagged `vMAJOR.MINOR.PATCH` on protected tags. The tag is a label; callers pin the commit SHA it points at.
+- A release is made by merging: a pull request adds a new `## X.Y.Z (YYYY-MM-DD)` section to `CHANGELOG.md`, and when it merges, `release.yml` creates `vX.Y.Z` at the merge commit with that section as its notes. It never moves or replaces a tag that already exists, so a version that's already tagged is left alone.
 - Nothing follows `main`. There's no automatic upgrade.
 - A release only ever adds: markers and records written by an older release still read correctly, so moving back is safe.
 

@@ -4,6 +4,8 @@ Each release says what changed, whether it's compatible, any configuration a cal
 
 ## Unreleased
 
+- **Added:** `release.yml` creates each release when the pull request that adds its `CHANGELOG.md` section merges, at the merge commit, with that section as its notes. It never moves or replaces an existing tag.
+
 ## 0.2.0 (2026-11-07)
 
 Compatible: callers of `finish-task-on-merge.yml` change nothing.
