@@ -113,6 +113,18 @@ jobs:
           path: .playbook
           persist-credentials: false
 
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 22
+          package-manager-cache: false
+
+      # Before anything is read, so an empty setting stops the run instead of reading the wrong repository.
+      - name: Check the caller's settings
+        env:
+          CONFIG_REPOSITORY: ${{ inputs.config-repository }}
+          CLICKUP_TOKEN: ${{ secrets.CLICKUP_TOKEN }}
+        run: node .playbook/scripts/finish-task-on-merge/finish.mjs settings
+
       - name: Check out the config repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -121,11 +133,6 @@ jobs:
           path: .config
           token: ${{ secrets.CONFIG_TOKEN || github.token }}
           persist-credentials: false
-
-      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
-        with:
-          node-version: 22
-          package-manager-cache: false
 
       - name: Move the task to done
         env:
@@ -146,10 +153,6 @@ jobs:
           SPACES_FILE: ${{ runner.temp }}/spaces.jsonl
         run: |
           set -euo pipefail
-          if [ -z "${CLICKUP_TOKEN}" ]; then
-            echo "::error::CLICKUP_TOKEN is empty. Pass it by name in the calling job's secrets."
-            exit 1
-          fi
           case "$SPACES_PATH" in *..*|/*) echo "::error::spaces-path must be a folder inside the config repository."; exit 1 ;; esac
           export CONFIG_SHA=$(git -C .config rev-parse HEAD)
           # One JSON line per space file; files starting with _ (templates) are skipped.

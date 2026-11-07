@@ -3,7 +3,7 @@
 import { test, beforeEach } from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  mergedPullRequestTask, isDone, allSubtasksDone, categoryOption, finishKey, linkProblem, ensure, merged,
+  mergedPullRequestTask, isDone, allSubtasksDone, categoryOption, finishKey, linkProblem, ensure, merged, settingsProblem,
 } from '../../scripts/finish-task-on-merge/finish.mjs';
 import { parseTaskId, repositoryOf, maskSecrets } from '../../scripts/lib/tasks.mjs';
 
@@ -86,6 +86,17 @@ test('a bare repository name means the config owner, and Owner/Name is used as w
   assert.equal(repositoryOf('', 'org-a'), null);
   assert.throws(() => repositoryOf('https://github.com/org-a/web', 'org-a'));
   assert.equal(parseTaskId('cu-86ABC12DE').ref, 'CU-86abc12de');
+});
+
+test('missing or malformed caller settings are refused before anything is read, saying what to set', () => {
+  const ok = { CONFIG_REPOSITORY: 'org-a/config', CLICKUP_TOKEN: 'synthetic' };
+  assert.equal(settingsProblem(ok), null);
+  assert.match(settingsProblem({ ...ok, CONFIG_REPOSITORY: '' }), /config-repository is empty.*Owner\/Name.*reach only public repositories/s);
+  assert.match(settingsProblem({ ...ok, CONFIG_REPOSITORY: ' ' }), /config-repository is empty/);
+  for (const bad of ['config', 'org-a/config/extra', 'https://github.com/org-a/config', 'org a/config']) {
+    assert.match(settingsProblem({ ...ok, CONFIG_REPOSITORY: bad }), /isn't Owner\/Name/, bad);
+  }
+  assert.match(settingsProblem({ ...ok, CLICKUP_TOKEN: '' }), /CLICKUP_TOKEN is empty.*by name.*reach only public repositories/s);
 });
 
 test('1: two organisations with identically named repositories stay isolated', async () => {

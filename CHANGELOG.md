@@ -4,6 +4,8 @@ Each release says what changed, whether it's compatible, any configuration a cal
 
 ## Unreleased
 
+- **Fixed:** `finish-task-on-merge.yml` checks the caller's settings before it reads anything. An empty or malformed `config-repository`, or an empty `CLICKUP_TOKEN`, now stops the run with what to set, instead of checking out the caller's own repository as the config. The message also says that organisation variables and secrets don't reach private repositories on some GitHub plans. Compatible: callers change nothing.
+
 ## 0.1.0 (2026-11-07)
 
 First release. Compatible: nothing to upgrade from.
