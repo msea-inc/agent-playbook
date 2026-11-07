@@ -30,7 +30,7 @@ const SECRET_SHAPES = [
 ];
 
 /** Hosts a playbook file may link to: public documentation only. */
-export const FILE_LINK_HOSTS = ['github.com', 'docs.github.com', 'code.claude.com', 'docs.anthropic.com', 'agentskills.io', 'semver.org', 'keepachangelog.com'];
+export const FILE_LINK_HOSTS = ['github.com', 'api.github.com', 'api.clickup.com', 'docs.github.com', 'code.claude.com', 'docs.anthropic.com', 'agentskills.io', 'semver.org', 'keepachangelog.com'];
 /** Hosts a PR description or commit message may link to. */
 export const TEXT_LINK_HOSTS = ['github.com', 'app.clickup.com', 'claude.ai', 'claude.com'];
 
@@ -54,12 +54,17 @@ function common(line, deny) {
   return problems;
 }
 
-/** Problems in one line of a playbook file. Task IDs, issue numbers, outside links and real-looking IDs are all refused. */
-export function fileLineProblems(line, deny = []) {
+/**
+ * Problems in one line of a playbook file. Task IDs, issue numbers, outside links and real-looking IDs are all refused.
+ * Tests may use made-up task IDs and numbers, because every test file says it's synthetic (see syntheticProblems).
+ */
+export function fileLineProblems(line, deny = [], path = '') {
   const problems = common(line, deny);
+  const synthetic = /^tests\//.test(path);
+  for (const [, host] of line.matchAll(LINK)) if (!hostAllowed(host, FILE_LINK_HOSTS)) problems.push(`links outside public documentation (${host})`);
+  if (synthetic) return problems;
   if (TASK_ID.test(line)) problems.push(`has a task ID (${line.match(TASK_ID)[0]})`);
   if (ISSUE_NUMBER.test(line)) problems.push('has an issue or PR number');
-  for (const [, host] of line.matchAll(LINK)) if (!hostAllowed(host, FILE_LINK_HOSTS)) problems.push(`links outside public documentation (${host})`);
   for (const number of line.match(LONG_NUMBER) ?? []) if (!/^(\d)\1+$/.test(number)) problems.push(`has a real-looking ID (${number})`);
   return problems;
 }
@@ -85,11 +90,11 @@ export function subjectProblems(subject, deny = []) {
   return textLineProblems(stripped, deny);
 }
 
-/** Fixtures say they're synthetic in their first lines, so nobody mistakes them for real records. */
-export function fixtureProblems(path, text) {
-  if (!/(^|\/)fixtures\//.test(path)) return [];
+/** Test files and fixtures say they're synthetic in their first lines, so nobody mistakes them for real records. */
+export function syntheticProblems(path, text) {
+  if (!/^tests\//.test(path)) return [];
   const head = text.split('\n').slice(0, 3).join('\n');
-  return /synthetic/i.test(head) ? [] : ['is a fixture that doesn\'t say "synthetic" in its first lines'];
+  return /synthetic/i.test(head) ? [] : ['is a test or fixture that doesn\'t say "synthetic" in its first lines'];
 }
 
 /** A `uses:` reference must be a local path or pinned to a full commit SHA. */
@@ -130,7 +135,7 @@ function scan(files, check) {
     text.split('\n').forEach((line, index) => {
       for (const problem of check(line, path)) findings.push({ where: `${path}:${index + 1}`, problem });
     });
-    for (const problem of fixtureProblems(path, text)) findings.push({ where: path, problem });
+    for (const problem of syntheticProblems(path, text)) findings.push({ where: path, problem });
   }
   return findings;
 }
@@ -143,7 +148,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   const deny = denyList(process.env.CONTENT_DENY);
   const files = trackedFiles();
   if (mode === 'files') {
-    report(scan(files.filter(path => path !== SELF && !OWN_TESTS.test(path)), line => fileLineProblems(line, deny)));
+    report(scan(files.filter(path => path !== SELF && !OWN_TESTS.test(path)), (line, path) => fileLineProblems(line, deny, path)));
   } else if (mode === 'pins') {
     report(scan(files.filter(path => /^\.github\/workflows\/.*\.ya?ml$|(^|\/)action\.ya?ml$/.test(path)), line => pinProblems(line)));
   } else if (mode === 'merges') {

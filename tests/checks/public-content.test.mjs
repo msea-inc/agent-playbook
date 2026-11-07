@@ -2,7 +2,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  denyList, fileLineProblems, textLineProblems, subjectProblems, fixtureProblems, pinProblems, mergeProblems,
+  denyList, fileLineProblems, textLineProblems, subjectProblems, syntheticProblems, pinProblems, mergeProblems,
 } from '../../scripts/checks/public-content.mjs';
 
 const clean = problems => assert.deepEqual(problems, []);
@@ -65,10 +65,13 @@ test('a commit subject may carry the task ID in its prefix and subtask suffix on
   flags(subjectProblems('feat(ACME-42): Fix what ACME-41 broke'), /task ID/);
 });
 
-test('fixtures must say they are synthetic', () => {
-  clean(fixtureProblems('tests/fixtures/spaces.json', '{ "_note": "Synthetic fixture" }'));
-  flags(fixtureProblems('tests/fixtures/spaces.json', '{ "space": "Web" }'), /synthetic/);
-  clean(fixtureProblems('docs/onboarding.md', 'anything'));
+test('tests and fixtures must say they are synthetic, and may then use made-up IDs', () => {
+  clean(syntheticProblems('tests/fixtures/spaces.json', '{ "_note": "Synthetic fixture" }'));
+  flags(syntheticProblems('tests/fixtures/spaces.json', '{ "space": "Web" }'), /synthetic/);
+  clean(syntheticProblems('docs/onboarding.md', 'anything'));
+  clean(fileLineProblems("merged(env('feat(ACME-42): Thing'), '901299')", [], 'tests/x.test.mjs'));
+  flags(fileLineProblems('see https://intranet.acme.test/x', [], 'tests/x.test.mjs'), /links outside/);
+  flags(fileLineProblems('token ghp_abcdefghijklmnopqrstuvwxyz0123', [], 'tests/x.test.mjs'), /looks like/);
 });
 
 test('every action is pinned to a full SHA', () => {
