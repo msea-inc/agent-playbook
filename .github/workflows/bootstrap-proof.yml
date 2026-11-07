@@ -1,0 +1,89 @@
+# Proves the bootstrap every playbook workflow starts with: before it runs any playbook code, the
+# workflow reads its own identity from the job's OIDC token, checks that it was called from this
+# repository at a full commit SHA, and checks out exactly that commit.
+#
+# Callers must pin this workflow to a full SHA and grant `id-token: write`:
+#
+#   jobs:
+#     proof:
+#       uses: msea-inc/agent-playbook/.github/workflows/bootstrap-proof.yml@<40-character SHA>
+#       permissions:
+#         contents: read
+#         id-token: write
+name: Bootstrap proof
+
+on:
+  workflow_call:
+    outputs:
+      library-sha:
+        description: The playbook commit this run checked out and ran.
+        value: ${{ jobs.prove.outputs.library-sha }}
+
+permissions: {}
+
+jobs:
+  prove:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    outputs:
+      library-sha: ${{ steps.identity.outputs.sha }}
+    steps:
+      # This step can't use any playbook code, because the playbook isn't checked out yet.
+      # tests/bootstrap/identity.test.mjs runs the lines between the markers.
+      - name: Check which playbook commit is running
+        id: identity
+        shell: bash
+        env:
+          EXPECTED_REPOSITORY: msea-inc/agent-playbook
+        run: |
+          # bootstrap:begin
+          set -euo pipefail
+          if [ -z "${ACTIONS_ID_TOKEN_REQUEST_URL:-}" ] || [ -z "${ACTIONS_ID_TOKEN_REQUEST_TOKEN:-}" ]; then
+            echo "::error::The caller didn't grant id-token: write, so this workflow can't tell which playbook commit it is. Add 'permissions: { contents: read, id-token: write }' to the calling job."
+            exit 1
+          fi
+          response=$(curl -sSf -H "Authorization: Bearer ${ACTIONS_ID_TOKEN_REQUEST_TOKEN}" "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=agent-playbook")
+          token=$(printf '%s' "$response" | jq -r '.value // empty')
+          if [ -z "$token" ]; then
+            echo "::error::GitHub returned no OIDC token, so this workflow can't tell which playbook commit it is."
+            exit 1
+          fi
+          echo "::add-mask::$token"
+          payload=$(printf '%s' "$token" | cut -d. -f2 | tr '_-' '/+')
+          while [ $(( ${#payload} % 4 )) -ne 0 ]; do payload="${payload}="; done
+          claims=$(printf '%s' "$payload" | base64 -d)
+          workflow_ref=$(printf '%s' "$claims" | jq -r '.job_workflow_ref // empty')
+          workflow_sha=$(printf '%s' "$claims" | jq -r '.job_workflow_sha // empty')
+          repository="${workflow_ref%%/.github/workflows/*}"
+          ref="${workflow_ref##*@}"
+          if [ "${repository,,}" != "${EXPECTED_REPOSITORY,,}" ]; then
+            echo "::error::This run's workflow comes from '${repository}', not ${EXPECTED_REPOSITORY}, so it was refused."
+            exit 1
+          fi
+          if ! [[ "$ref" =~ ^[0-9a-f]{40}$ ]]; then
+            echo "::error::The caller referenced the playbook at '${ref}'. Pin it to a full 40-character commit SHA, with the release in a comment, e.g. @<sha> # v0.1.0."
+            exit 1
+          fi
+          if [ "$ref" != "$workflow_sha" ]; then
+            echo "::error::The workflow's ref (${ref}) and its commit (${workflow_sha}) disagree, so it was refused."
+            exit 1
+          fi
+          echo "repository=${EXPECTED_REPOSITORY}" >> "$GITHUB_OUTPUT"
+          echo "sha=${workflow_sha}" >> "$GITHUB_OUTPUT"
+          echo "Running ${EXPECTED_REPOSITORY} at ${workflow_sha}."
+          # bootstrap:end
+
+      - name: Check out the playbook at that commit
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: ${{ steps.identity.outputs.repository }}
+          ref: ${{ steps.identity.outputs.sha }}
+          path: .playbook
+          persist-credentials: false
+
+      - name: Run a playbook script from that checkout
+        env:
+          EXPECTED_SHA: ${{ steps.identity.outputs.sha }}
+        run: node .playbook/scripts/bootstrap/proof.mjs .playbook
