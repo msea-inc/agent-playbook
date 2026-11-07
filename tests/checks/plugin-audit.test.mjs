@@ -85,3 +85,12 @@ test('a marketplace entry must point inside plugins/, and every listed plugin mu
   assert.ok(problems({ '.claude-plugin/marketplace.json': JSON.stringify({ name: 'm', owner: { name: 'o' }, plugins: [{ name: 'q', source: './plugins/q' }] }) }).some(p => p.includes('plugin.json')));
   assert.ok(problems({ '.claude-plugin/marketplace.json': JSON.stringify({ name: 'm', owner: { name: 'o' }, plugins: [{ name: 'p', source: { source: 'github', repo: 'a/b' } }] }) }).some(p => p.includes('plugins/')));
 });
+
+test("the playbook's own plugin passes, with its shared skills", async () => {
+  const { existsSync } = await import('node:fs');
+  assert.deepEqual(auditRepository('.'), []);
+  for (const skill of ['working-style', 'code-review']) {
+    assert.ok(existsSync(`plugins/playbook/skills/${skill}/SKILL.md`), skill);
+    assert.ok(existsSync(`plugins/playbook/skills/${skill}/regression-cases.md`), skill);
+  }
+});
