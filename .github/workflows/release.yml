@@ -1,0 +1,48 @@
+# Release on merge: when a push to main makes a new version the newest released one in CHANGELOG.md
+# ("## X.Y.Z (YYYY-MM-DD)"), creates release vX.Y.Z at that commit, with the version's section as its notes. The merge
+# is the approval. It never moves, overwrites or deletes a tag or release: a tag that already exists is left alone.
+name: Release on merge
+
+on:
+  push:
+    branches: [main]
+
+permissions: {}
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 22
+          package-manager-cache: false
+      - name: Find the newest released version
+        id: version
+        env:
+          NOTES_FILE: ${{ runner.temp }}/notes.md
+        run: node scripts/release/changelog.mjs
+      - name: Create its release, unless it exists
+        if: steps.version.outputs.tag != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.version.outputs.tag }}
+          NOTES_FILE: ${{ runner.temp }}/notes.md
+        run: |
+          set -euo pipefail
+          if gh api "repos/${GITHUB_REPOSITORY}/git/ref/tags/${TAG}" --silent 2>/dev/null; then
+            echo "${TAG} already exists, so nothing was created. A tag is never moved."
+            exit 0
+          fi
+          gh release create "$TAG" --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" --title "$TAG" --notes-file "$NOTES_FILE"
+          echo "Created release ${TAG} at ${GITHUB_SHA}."

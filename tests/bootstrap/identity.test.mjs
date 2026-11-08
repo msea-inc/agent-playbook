@@ -85,10 +85,14 @@ test('the checkout check accepts only the expected commit', () => {
   assert.equal(checkoutMatches('main', 'main').ok, false);
 });
 
-test('every playbook workflow starts with the same bootstrap', async () => {
+// Reusable workflows run in a caller's repository, so each proves its own identity first. This repository's own
+// workflows (CI, release) run only here and need no bootstrap.
+test('every reusable playbook workflow starts with the same bootstrap', async () => {
   const { readdirSync } = await import('node:fs');
   const dir = join(root, '.github/workflows');
-  for (const file of readdirSync(dir).filter(name => name !== 'ci.yml')) {
+  const reusable = readdirSync(dir).filter(name => /^\s+workflow_call:/m.test(readFileSync(join(dir, name), 'utf8')));
+  assert.ok(reusable.includes('finish-task-on-merge.yml'), 'no reusable workflows found');
+  for (const file of reusable) {
     const text = readFileSync(join(dir, file), 'utf8');
     assert.ok(text.includes('# bootstrap:begin'), `${file} has no bootstrap`);
     assert.equal(text.split('# bootstrap:begin')[1].split('# bootstrap:end')[0], step, `${file}'s bootstrap differs from bootstrap-proof.yml`);
