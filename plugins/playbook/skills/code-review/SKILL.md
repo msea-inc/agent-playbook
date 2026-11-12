@@ -1,7 +1,7 @@
 ---
 name: code-review
 description: Two-axis review of a change, against the repository's standards and against the task's acceptance criteria, reported separately. Use before a coding run returns, before opening or updating a pull request, or when the person asks to review a branch or pull request.
-version: 1.0.0
+version: 1.1.0
 library-compat: 1
 ---
 
@@ -38,10 +38,10 @@ The spec is the task the change is for: its goal, its details (including any agr
 
 Read every file that says how code is written here: the repository's agent instructions (such as `CLAUDE.md`), its architecture notes, its contribution rules, any review conventions they point to, and anything those files point to. Typical standards are layer rules and dependency direction, naming in the domain's language, how errors reach the user, which tests go where, generated output never edited by hand, and screen coverage for changed screens.
 
-On top of those, carry the smells in `references/smells.md`. Two rules bind them:
+On top of those, carry the smells in `references/smells.md` and the review checks in `domain-driven-design` (in this plugin), which catch both over-engineering (wrappers that add nothing, a repository for everything, events nothing consumes, unneeded distribution) and under-modelling (critical rules scattered across controllers, arbitrary state changes, duplicated invariants), plus departures from the design approach the plan recorded. Two rules bind them:
 
 - **The repository wins.** Where a documented standard endorses something a smell would flag, don't flag it.
-- **Always a judgement call.** A smell is a possible problem ("possible feature envy"), never a hard violation.
+- **Always a judgement call.** A smell or a design check is a possible problem ("possible feature envy"), never a hard violation, unless the repository documents the rule.
 
 Skip anything a check already enforces, such as the build, tests or secret scanning.
 

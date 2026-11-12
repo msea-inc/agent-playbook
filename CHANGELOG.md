@@ -4,6 +4,8 @@ Each release says what changed, whether it's compatible, any configuration a cal
 
 ## Unreleased
 
+- **Added:** the `domain-driven-design` skill, the shared design policy: domain-led design everywhere, with rich modelling only where interacting rules, invariants or lifecycle complexity earn it. It uses Vaughn Vernon's *Implementing Domain-Driven Design* for strategic and tactical DDD, and Martin Fowler's *Patterns of Enterprise Application Architecture* for choosing simpler patterns such as transaction scripts and CRUD. It says what the architect, engineer, coding and review roles each do with it, treats over-engineering and under-modelling as defects, and the repository's own rules still win.
+- **Changed:** `code-review` 1.1.0 carries the domain-driven-design review checks for over-engineering and under-modelling on the standards axis, as judgement calls unless the repository documents the rule.
 - **Added:** `release.yml` creates each release when the pull request that adds its `CHANGELOG.md` section merges, at the merge commit, with that section as its notes. It never moves or replaces an existing tag.
 
 ## 0.2.0 (2026-11-07)
