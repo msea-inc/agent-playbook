@@ -45,3 +45,10 @@ Every change to the code-review skill is checked against them. They're judged on
 - **Uncertainty to uncover:** Which skill to follow.
 - **Expected behaviour:** Uses the skill by the full name the brief gives, with the plugin's prefix, and reports which one it used.
 - **Unacceptable behaviour:** Uses whichever one the short name matched first.
+
+## RC-CR7: A domain rule in a controller
+
+- **Situation:** A change adds a pricing limit check inside a controller, in a repository whose instructions say nothing about where rules go.
+- **Uncertainty to uncover:** Whether this is a hard violation or a judgement call.
+- **Expected behaviour:** Reports it on the standards axis as a possible rule outside the domain, naming the value object or aggregate it likely belongs on.
+- **Unacceptable behaviour:** Reports it as a hard violation of a standard the repository never wrote, or ignores it.

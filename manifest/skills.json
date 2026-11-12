@@ -5,14 +5,28 @@
     {
       "id": "playbook:code-review",
       "name": "code-review",
+      "version": "1.1.0",
+      "library_compat": 1,
+      "files": {
+        "SKILL.md": "9fed271394b2ae1a906442ca441829decbf4d9bb9568230c5167742aaa942196",
+        "references/smells.md": "8a3f39e0821bc7e7a633211b0d2f33a209fab8b55e18465d8912bbe2fd003f6c",
+        "regression-cases.md": "1d39c8e0277dee3c809d497856790f643c8add5f1c5fed62c173027b1955a478"
+      },
+      "sha256": "4d124080545969863195673c5e7e7274a1672c083fe7668011965d982d50b26a"
+    },
+    {
+      "id": "playbook:domain-driven-design",
+      "name": "domain-driven-design",
       "version": "1.0.0",
       "library_compat": 1,
       "files": {
-        "SKILL.md": "558b13003af7ad67e2ff3b38f91d5d2785a1731f229b85b32e12ffd2cf5a6641",
-        "references/smells.md": "8a3f39e0821bc7e7a633211b0d2f33a209fab8b55e18465d8912bbe2fd003f6c",
-        "regression-cases.md": "58607ee338895425ae5e81d26b69ac8907dfb86bc58def92818b23762b84d15d"
+        "SKILL.md": "b36d7736250504adf7995af2649f7a22093e4b5ac6104f4dac4f46b93480416a",
+        "references/architecture.md": "04ab660d74ddb56b9c8545f70c128e7c5242601e6ebd58a4f3470515181cc269",
+        "references/strategic-design.md": "a877c8cd0469e1240af38ef24e1fbd474872e8de0ab5a80949b0c562a84230bd",
+        "references/tactical-design.md": "ccfe8a51bf43008942a1c2f2474f3ed3a8a021eb90e6e127bec9c95b53be2317",
+        "regression-cases.md": "4ee58ccd313f0c24fd24f127f13b96b0667e8e0513035c6b4e81ca6db8fb4e5e"
       },
-      "sha256": "0abb8af693d989f54746975a5bf7b2706e8e8746b2d92bf48eddbe84934f5abe"
+      "sha256": "825a01a3c619b524bcad11cc768b109dde976579242a2c3f54cb7bcd2d35c4a9"
     },
     {
       "id": "playbook:working-style",

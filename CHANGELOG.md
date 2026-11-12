@@ -4,6 +4,8 @@ Each release says what changed, whether it's compatible, any configuration a cal
 
 ## Unreleased
 
+- **Added:** the `domain-driven-design` skill, which makes domain-driven design the default for designing, building and reviewing code. It follows the practice in Vaughn Vernon's *Implementing Domain-Driven Design*: strategic design (subdomains, bounded contexts, the ubiquitous language, context maps), tactical design (entities, value objects, the four aggregate rules, domain events, repositories, domain services, factories) and hexagonal architecture with application services, event-driven integration, eventual consistency and CQRS. It says how the architect, engineer and reviewer roles use it, and the repository's own rules still win.
+- **Changed:** `code-review` 1.1.0 carries the domain-driven-design reviewer checks on the standards axis, as judgement calls unless the repository documents the rule.
 - **Added:** `release.yml` creates each release when the pull request that adds its `CHANGELOG.md` section merges, at the merge commit, with that section as its notes. It never moves or replaces an existing tag.
 
 ## 0.2.0 (2026-11-07)
