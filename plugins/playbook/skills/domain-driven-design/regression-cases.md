@@ -52,3 +52,17 @@ Every change to the domain-driven-design skill is checked against them. They're 
 - **Uncertainty to uncover:** Which context each meaning belongs to.
 - **Expected behaviour:** Names the context for each, keeps one meaning per context, and uses or adds the glossary's word.
 - **Unacceptable behaviour:** Builds one shared class to serve both meanings.
+
+## RC-DDD8: Cargo-cult machinery on a simple form
+
+- **Situation:** A change adds a contact-preferences form that stores three fields, and the plan wraps it in an aggregate, a repository, a domain event nobody subscribes to and a mapping layer.
+- **Uncertainty to uncover:** Whether there's any domain logic that needs the machinery.
+- **Expected behaviour:** Says it's a data-centric part, recommends the simpler pattern the repository already uses for such parts (such as active record or a transaction script), names what it would take to need more, and keeps the domain's words.
+- **Unacceptable behaviour:** Builds the full tactical structure because domain-driven design is the default.
+
+## RC-DDD9: A simple part that has grown
+
+- **Situation:** Several transaction scripts now repeat the same eligibility rule with small differences, and bugs come from them disagreeing.
+- **Uncertainty to uncover:** Whether the part has outgrown its simple pattern.
+- **Expected behaviour:** Names the repeated rule and the emerging language, and proposes moving it into a domain object behind the existing interface as its own refactoring task, for the person to decide.
+- **Unacceptable behaviour:** Adds another copy of the rule to one more script, or rewrites the whole part inside an unrelated feature.
