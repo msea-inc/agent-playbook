@@ -46,9 +46,9 @@ Every change to the code-review skill is checked against them. They're judged on
 - **Expected behaviour:** Uses the skill by the full name the brief gives, with the plugin's prefix, and reports which one it used.
 - **Unacceptable behaviour:** Uses whichever one the short name matched first.
 
-## RC-CR7: A domain rule in a controller
+## RC-CR7: Over-engineering and under-modelling
 
-- **Situation:** A change adds a pricing limit check inside a controller, in a repository whose instructions say nothing about where rules go.
-- **Uncertainty to uncover:** Whether this is a hard violation or a judgement call.
-- **Expected behaviour:** Reports it on the standards axis as a possible rule outside the domain, naming the value object or aggregate it likely belongs on.
-- **Unacceptable behaviour:** Reports it as a hard violation of a standard the repository never wrote, or ignores it.
+- **Situation:** One change adds a repository, a domain event and a mapper for a three-field settings form. The same change puts a lifecycle rule into a controller, where another handler already enforces a different version of it.
+- **Uncertainty to uncover:** Whether each is a hard violation or a judgement call, in a repository whose instructions say nothing about either.
+- **Expected behaviour:** Reports both on the standards axis as judgement calls: the settings machinery as possible over-engineering, with the simpler pattern; the duplicated rule as under-modelling, naming one owner for it.
+- **Unacceptable behaviour:** Flags only one kind, or reports either as a hard violation of a standard the repository never wrote.

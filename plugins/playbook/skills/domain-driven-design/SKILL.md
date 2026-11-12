@@ -1,86 +1,144 @@
 ---
 name: domain-driven-design
-description: Domain-driven design as the default way to think about code, following Vaughn Vernon's Implementing Domain-Driven Design (bounded contexts, context maps, aggregate rules, domain events, repositories, application services, hexagonal architecture), and choosing a simpler CRUD or data-centric design from Fowler's Patterns of Enterprise Application Architecture when DDD's overhead outweighs its return. Use whenever you design, plan, write, refactor or review code, and whenever an architect or engineer role shapes a solution.
+description: The shared design policy - domain-led design everywhere, with rich domain-driven design modelling only where the domain's complexity earns it. Uses Vaughn Vernon's Implementing Domain-Driven Design for strategic and tactical DDD, and Martin Fowler's Patterns of Enterprise Application Architecture for choosing simpler patterns such as transaction scripts and CRUD. Use whenever you design, plan, write, refactor or review code, and whenever an architect or engineer role shapes a solution.
 version: 1.0.0
 library-compat: 1
 ---
 
 # Domain-driven design
 
-Every piece of code you design, write or review starts from the domain: the problem the business is solving, in the words its experts use. Domain-driven design (DDD) is the default way of thinking. This skill follows the practice Vaughn Vernon set out in *Implementing Domain-Driven Design* (IDDD): strategic design first, then a small set of tactical patterns, held together by a hexagonal architecture.
+This is the one design policy that the architect, engineer, coding and review skills all follow. The aim isn't for all code to look like DDD. The aim is to understand the domain, choose the least costly design that protects its important rules, and make that choice the same way in architecture, engineering, coding and review.
 
-Thinking in the domain is always on; the full tactical machinery isn't. Applying aggregates, events and layers to a problem that is mostly storing and showing data is cargo-cult DDD, and it over-engineers. When the overhead outweighs the return, choose a CRUD or data-centric design instead, using Martin Fowler's *Patterns of Enterprise Application Architecture* (PoEAA) as the guide: the right pattern follows from how complex the domain logic really is. That choice is part of the method, not a departure from it.
+Two references, used at different levels. They complement each other:
 
-It's written in our own words; read the books for the full argument.
+- **Vaughn Vernon, *Implementing Domain-Driven Design* (IDDD):** the primary reference for strategic and tactical DDD. That means bounded contexts, context maps and the ubiquitous language, and then the modelling patterns.
+- **Martin Fowler, *Patterns of Enterprise Application Architecture* (PoEAA):** the reference for choosing how application logic and persistence are organised. That includes the simpler patterns, such as a transaction script, which is a deliberate architectural choice, not failed DDD.
 
-This skill is guidance only and grants nothing. The repository's own instructions, layer rules, glossary and decision records win wherever they differ: they are that project's settled model, and this skill is how to work within it and improve it. Follow `working-style` (in this plugin) whenever you report or ask.
+This skill is written in our own words; read the books for the full argument. It's guidance only and grants nothing. Follow `working-style` (in this plugin) whenever you report or ask.
 
 References:
 
 - `references/strategic-design.md`: subdomains, bounded contexts, the ubiquitous language and context mapping.
-- `references/tactical-design.md`: entities, value objects, aggregates and Vernon's four rules, domain events, repositories, domain services, factories and modules.
-- `references/architecture.md`: hexagonal architecture, application services, integrating contexts with events, eventual consistency and CQRS.
-- `references/choosing-the-approach.md`: when DDD pays and when it doesn't, Fowler's domain-logic and data-source patterns, the signs of cargo-cult DDD, and how to move up when a simple part grows.
+- `references/tactical-design.md`: entities, value objects, aggregates and Vernon's aggregate guidance, domain events, repositories, domain services, factories and modules.
+- `references/architecture.md`: layering and hexagonal architecture as compatible choices, application services, integrating contexts, consistency across boundaries, CQRS and event sourcing.
+- `references/choosing-the-approach.md`: Fowler's domain-logic and data-source patterns, how to choose between them, signs of over-engineering and under-modelling, and revisiting a choice.
 
 Changes to this skill are checked against `regression-cases.md`, beside it.
 
-## The stance
+## The policy
 
-1. **Choose the approach before the patterns.** Judge how much real domain logic the part has, and what it's worth to the business. Rich rules in the core domain get a domain model with the tactical patterns. Simple storing and showing gets a transaction script, table module or active record over a plain data model, as `references/choosing-the-approach.md` describes. Say which you chose and why.
-2. **Language before code.** Use the domain's words in names, tests, messages and docs, exactly as the repository's glossary has them. If a word is missing or fuzzy, settle it before you name a class after it.
-3. **Find the context before the class.** Every model lives inside one bounded context, and a word means one thing inside it. Say which context a change belongs to before you design anything. If a change spans contexts, say how they're mapped and which one owns each piece of state.
-4. **Spend the effort where the business competes.** Rich modelling is for the core domain. Supporting and generic subdomains get the simplest design that works, or something bought or reused. Saying "this part is CRUD, and that's fine" is a DDD decision, not an escape from it. Even in CRUD, keep the domain's words, the context's boundary and dependencies pointing inwards: they cost almost nothing.
-5. **Small aggregates, protecting true invariants.** An aggregate is a consistency boundary, not a way to group related data. Change one aggregate per transaction; reach others by identity, and bring them into line with domain events.
-6. **Rules live in the domain.** Behaviour and invariants sit in entities, value objects and domain services, named in the language. Application services coordinate and hold no business rules. Adapters translate and hold none either.
-7. **Dependencies point inwards.** The domain depends on nothing outside it. Persistence, messaging, user interfaces and outside providers are adapters behind ports the inner layers own.
-8. **Make what happened explicit.** When something the experts care about occurs, model it as a domain event named in the past tense, and let other aggregates and contexts react to it.
+Apply domain-led design in proportion to the problem.
+
+1. **Begin with the domain, not a template.** Start from the domain's language, outcomes, rules and constraints, not from a fixed set of layers or patterns.
+2. **Use rich modelling only where it's justified.** Use it where interacting business rules, invariants or lifecycle complexity justify the cost. Prefer simpler CRUD-oriented designs and transaction scripts when they meet the requirements more clearly and cheaply.
+3. **Don't build for a template.** Never add aggregates, repositories, domain events, CQRS, event sourcing or microservices just to make the design look like DDD.
+4. **Record each consequential choice.** Write down the evidence, the trade-offs and what would make you reconsider. Over-engineering and leaving business rules unprotected are both design defects.
+5. **Preserve what works.** Keep existing supported behaviour and the repository's constraints. Propose broader restructuring as its own piece of work, unless the approved change needs it.
+
+## Always: domain understanding
+
+These cost almost nothing and apply to every change, CRUD included:
+
+- Understand the user's goal and the business rules before choosing a design.
+- Use consistent, meaningful language: the domain's words, from the repository's glossary, in names, tests and messages.
+- Know who owns each decision and each piece of state. Each business invariant has exactly one clear owner. It is never duplicated, slightly differently, in a script and a domain object.
+- Make important constraints explicit.
+- Keep unrelated concepts from becoming entangled. When the same word means different things in different areas, those are different bounded contexts, and translation between them is explicit.
+- Choose a design proportional to the problem.
+
+## Selectively: tactical DDD
+
+Entities, value objects, aggregates, repositories and domain events are there to solve an identified problem, not because a template expects them. Some things to keep in mind:
+
+- Four projects called Domain, Application, Infrastructure and API don't, by themselves, make good DDD.
+- A bounded context isn't automatically a microservice, a project or a folder.
+- A small CRUD feature doesn't automatically need an aggregate, a repository interface and an event pipeline.
+- A complex state transition doesn't become simple because its endpoint is called CRUD.
+- Complexity in technical integration, such as many providers, retries or formats, isn't domain complexity. It calls for good adapters, not necessarily a rich domain model.
+- Hexagonal architecture (ports and adapters) is a compatible choice that often helps. It isn't the definition of DDD.
+
+## Choosing a starting point
+
+| Situation | Start with |
+|---|---|
+| Simple record maintenance with straightforward validation | CRUD with a thin application or use-case layer; consider a transaction script |
+| Independent operations with limited business logic | Transaction scripts, extracting only genuinely shared behaviour |
+| Interacting rules, meaningful state transitions and invariants | A rich domain model, using the tactical patterns where justified |
+| The same terms mean different things in different areas | Explicit bounded contexts, with translation between their models |
+| Existing code already expresses the rules well | Keep it, unless the change brings a concrete improvement |
+
+CRUD describes operations, not a complete architecture. So don't ask "DDD or CRUD?". Ask which domain-logic pattern and which persistence pattern fit (`references/choosing-the-approach.md`). One system can use different approaches in different areas.
 
 ## By role
 
-### Architect
+Each role needs this policy at its own step. Leaving it to the coding step is too late, because by then the plan may already have committed to unnecessary aggregates, layers and abstractions.
 
-- Start from the subdomains and the outcome. Name the core domain the change touches, and which parts are supporting or generic.
-- Choose the approach per part, and say why: a domain model where the rules are rich and changing, a data-centric design where they're not. Name the PoEAA pattern for each (domain model, transaction script, table module, active record, data mapper).
-- Draw or describe the context map that applies: the bounded contexts involved, the relationship between each pair (see `references/strategic-design.md`), and which side is upstream.
-- Place each consequential decision in a context, and say where the consistency boundaries are: what must be true immediately, inside one aggregate, and what may become true shortly after, through events.
-- Prefer the smallest design that respects those boundaries. A new bounded context, a new message channel or event sourcing must be earned by a real difference in language, ownership or consistency, not by elegance.
-- Turn "it must stay consistent" into a scenario that says which invariant, at what moment, and what the user sees while it settles.
+### Architect: choose the modelling investment
 
-### Engineer or builder
+Identify:
 
-- Before planning, find the contexts and layers the repository already has, and its glossary. Label what you observed and what you inferred.
-- Match the approach the part already uses, and the complexity it actually has. Don't wrap a simple form in aggregates, events and repositories; don't let rules pile up in a script once they start interacting. When they do, propose the move up (see `references/choosing-the-approach.md`).
-- Put new behaviour where its rule belongs: on the aggregate root or value object that owns the invariant, or in a domain service when it spans aggregates and belongs to none.
-- Keep application services thin: load aggregates through repositories, call domain behaviour, save, and publish the events. One use case, one transaction, one aggregate changed.
-- Model values as immutable value objects that validate themselves, instead of passing strings and numbers about. Give entities identity and behaviour, not setters.
-- Keep providers behind ports with adapters; translate their models at the edge with an anti-corruption layer so their words don't leak into the domain.
-- Test the domain without infrastructure: aggregates and value objects through their behaviour, application services with in-memory adapters, adapters against the real thing where it matters.
+- the domain language and the context boundaries that matter;
+- the significant business rules and invariants;
+- whether the area is core, supporting or generic;
+- whether the complexity is in the business domain or only in technical integration;
+- the simplest credible approach, and its trade-offs;
+- what evidence would justify richer modelling later.
 
-### Reviewer
+Record a short decision for each area, with its reason and what would make you reconsider. For example:
+
+> Use a transaction script for this settings feature: validation is local and there are no interacting lifecycle rules. Reconsider a domain model if several operations must preserve shared invariants.
+
+> Use an aggregate for the booking lifecycle, because duplicate starts and invalid transitions must be prevented across several operations.
+
+Where the consistency of a rule matters, say which invariant it is, when it must hold and what the user sees in the meantime. Don't assume eventual consistency or strict consistency without asking (`references/architecture.md`). The architect doesn't invent findings about the code. It works from the engineer's evidence-backed packet of constraints.
+
+### Senior engineer: check the choice against the code
+
+- Find where each rule is owned today, and where the transactions begin and end.
+- Check the real lifecycle and concurrency requirements, not assumed ones.
+- Challenge abstractions that add no useful responsibility.
+- Find where a simpler implementation would duplicate an important rule.
+- Propose an incremental change, not a speculative rewrite.
+- Map each invariant and failure scenario to a test.
+
+You should be able to say either "this needs richer modelling" or "this doesn't earn the proposed abstraction", with evidence for it.
+
+### Coding: implement the decision
+
+- Follow the approach the plan recorded. If the code contradicts it, for example a "simple" area turns out to have interacting rules, raise it. Don't silently change the approach.
+- Put each rule where the recorded approach puts it: on the aggregate or value object that owns it in a domain model, or in one clearly named script or function in a transaction-script area. Never put it in a controller or adapter.
+- Keep the domain's words, and translate outside providers' models at the edge.
+- Test behaviour through the interface the approach gives you. In a domain model, test aggregates and value objects directly, and use cases with in-memory adapters. In a script, test the script.
+
+### Review: catch both kinds of defect
 
 Alongside the repository's own standards, look for:
 
-- a rule in a controller, handler, application service or adapter that belongs in the domain;
-- an anaemic model: entities that are only getters and setters, with the logic elsewhere;
-- primitive obsession where a value object would carry the rule;
-- one transaction that changes several aggregates, or an aggregate holding direct references to others instead of their identities;
-- a large aggregate grown to keep data together rather than to protect an invariant;
-- a provider's or another context's terms appearing inside the domain;
-- an inner layer depending on an outer one;
-- names that don't match the glossary;
-- cargo-cult DDD: aggregates, repositories, events or extra layers wrapping a part with no real rules, where a simpler PoEAA pattern would do the same job with less code.
+- **Over-engineering:**
+  - wrappers that add nothing;
+  - a repository for everything;
+  - events that nothing consumes;
+  - layers that only pass data through;
+  - aggregates with no invariant to protect;
+  - distribution nobody needs.
+- **Under-modelling:**
+  - critical rules scattered across controllers and handlers;
+  - state changed arbitrarily, without the rules that govern it;
+  - the same invariant implemented more than once;
+  - another context's or a provider's model leaking in;
+  - names that don't match the glossary.
+- **Departures from the recorded approach**, without the contradiction having been raised.
 
-Report each as a finding with the rule it breaks and where the behaviour belongs, not as a rewrite.
+Report each finding with what's wrong, where the rule or responsibility should sit, and the simpler or richer alternative. Don't write the fix as a rewrite.
 
-## When the repository isn't built this way
+## Precedence
 
-Don't impose a new architecture on a change. Work within the existing structure, model the new behaviour well inside it, and keep the domain words consistent. If the structure keeps getting in the way, say so with evidence and propose the change as its own piece of work, for the person to decide.
+The repository's own instructions, layering, glossary and decision records win wherever they differ from this skill. A shared skill update never overrides them. Project-specific rules stay in the project. This skill is the generic method that works within them. If a project's rule seems to work against proportion, say so with evidence and propose the change separately, for the person to decide.
 
-## Questions to ask before you write code
+## Questions before you write code
 
-- Which bounded context is this in, and what does each key word mean here?
-- Is this the core domain, or a supporting or generic part?
-- How much real domain logic is there? Would a transaction script or active record do it with less, and still be easy to change?
-- Which invariant does this protect, and which aggregate owns it?
-- What happened, in the experts' words, and who else needs to know?
-- What crosses a port, and does anything outside leak in through it?
+- What are the goal, the rules and the words here, and which context are they in?
+- Is this core, supporting or generic? Is the complexity in the domain or only in the integration?
+- Which invariants matter, who owns each, and when must each hold?
+- What's the least costly design that protects them? Which PoEAA pattern is that?
+- What would make us change that choice later?

@@ -8,11 +8,11 @@
       "version": "1.1.0",
       "library_compat": 1,
       "files": {
-        "SKILL.md": "9fed271394b2ae1a906442ca441829decbf4d9bb9568230c5167742aaa942196",
+        "SKILL.md": "9a10f7ef2e4bd14322efa5b2a26b6867f05350843c148ff48888a5a3a0a530cc",
         "references/smells.md": "8a3f39e0821bc7e7a633211b0d2f33a209fab8b55e18465d8912bbe2fd003f6c",
-        "regression-cases.md": "1d39c8e0277dee3c809d497856790f643c8add5f1c5fed62c173027b1955a478"
+        "regression-cases.md": "8692d71a802c8929467bf21dcfe5aa92ceb4323889af5a772e3eee727e885764"
       },
-      "sha256": "4d124080545969863195673c5e7e7274a1672c083fe7668011965d982d50b26a"
+      "sha256": "1b337c489c38543e281c2a20142ff7bb8d1376ae3f82dfda2f63ca57010d2d12"
     },
     {
       "id": "playbook:domain-driven-design",
@@ -20,14 +20,14 @@
       "version": "1.0.0",
       "library_compat": 1,
       "files": {
-        "SKILL.md": "11033ca56fd0d66113e5665828833bf7ee6aedc09e6e608f0abe1360af7121b5",
-        "references/architecture.md": "04ab660d74ddb56b9c8545f70c128e7c5242601e6ebd58a4f3470515181cc269",
-        "references/choosing-the-approach.md": "ece69a33f3cdea97ad0dda66784c4d8eb545ed69d3e7e32d119a276ae7381bf8",
+        "SKILL.md": "2c6933d58932ddba330b552ab024571a3acd467e811c7b2c6776a7fb6a18dae6",
+        "references/architecture.md": "943eb9929ead36d208ffac4c1e4ec7db322c22c599adaa4a0033a07820aad41b",
+        "references/choosing-the-approach.md": "9616f27f791dd6ea4d508b005b8b387b73a26653350f3710129af5cbf62c5299",
         "references/strategic-design.md": "a877c8cd0469e1240af38ef24e1fbd474872e8de0ab5a80949b0c562a84230bd",
-        "references/tactical-design.md": "ccfe8a51bf43008942a1c2f2474f3ed3a8a021eb90e6e127bec9c95b53be2317",
-        "regression-cases.md": "ef01a3b6a5d285b94873d90b35bb331df71298453c9583f69e51414fb37681c4"
+        "references/tactical-design.md": "b3ecf568d29f79be088f9d8cd064337bde761579aff6c0f8b42bb926d0701790",
+        "regression-cases.md": "5b1f7c65e0864a9bfc3df8f7e2efad26fb88ae00b9922db68f1cb10d007dbf97"
       },
-      "sha256": "4e871f8b0a6ae992100460471e89f6833bf94762f76a1269fc347d85cdd160f1"
+      "sha256": "2069e2adb69aae6c57ac8b0b269dd32aaa8548f0d089f96442ba62c6e72e964e"
     },
     {
       "id": "playbook:working-style",

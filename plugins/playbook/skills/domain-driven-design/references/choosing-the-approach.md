@@ -1,5 +1,7 @@
 # Choosing the approach
 
+CRUD describes operations, not an architecture. The real choice is which domain-logic pattern and which persistence pattern fit each area. Over-engineering and leaving business rules unprotected are both design defects.
+
 Domain-driven design is a way of thinking that always applies, and a set of tactical patterns that pay only where the domain logic is complex enough to need them. Applying the patterns to simple problems because "we do DDD here" is **cargo-cult DDD**: more code, more indirection and slower change, for no business return.
 
 For the choice itself, follow the thesis of Martin Fowler's *Patterns of Enterprise Application Architecture* (PoEAA): **the right way to organise domain logic depends on how complex that logic is.** A rich domain model has a higher starting cost, but its cost grows slowly as the rules multiply. Simpler patterns are cheaper to start, and become expensive once the rules interact. Pick the pattern for the complexity the part has, and expect to change it when that changes.
@@ -68,9 +70,24 @@ Related patterns worth knowing by name: **unit of work** (tracks what changed in
 
 When you see these in a design or a review, say so, with the simpler pattern that would do the same job.
 
+## Signs of under-modelling
+
+- Critical rules scattered across controllers, handlers and scripts.
+- State changed arbitrarily, with no single place that enforces which transitions are allowed.
+- The same invariant implemented in more than one place, slightly differently.
+- A complex lifecycle hidden behind endpoints called create and update.
+
+When you see these, name the rule and propose giving it one owner.
+
 ## Mixing approaches
 
-Different parts of one system can use different patterns, and should. The core domain uses a domain model; the admin screens beside it can use active record. Keep the boundary between them explicit, as you would between bounded contexts, so the simple part's data shapes don't leak into the core model.
+Different parts of one system can use different patterns, and should. The core domain uses a domain model; the admin screens beside it can use active record. Keep the boundary between them explicit, as you would between bounded contexts, so the simple part's data shapes don't leak into the core model. Each business invariant has exactly one owner. Never let a script and a domain object both enforce it.
+
+## Recording and revisiting the choice
+
+For each area a change touches, record the approach in a sentence or two: what was chosen, the evidence, the trade-off and the condition that would change it. The plan carries it, and a lasting choice goes in the repository's decision records. The coding step follows it and raises a contradiction instead of silently changing it. Review checks the code against it.
+
+Leave existing code alone when it already expresses the rules well and is well tested. Don't rewrite it to match this skill's terminology.
 
 ## Moving up when a part grows
 

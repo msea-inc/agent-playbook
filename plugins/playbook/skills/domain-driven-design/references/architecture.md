@@ -1,6 +1,6 @@
 # Architecture
 
-IDDD recommends an architecture that keeps the domain model at the centre and free of technology. Hexagonal architecture is the default; the others are choices to make when a context's needs call for them.
+IDDD describes architectures that keep a domain model at the centre and free of technology. They're compatible choices that often help, not the definition of DDD. Use the one the repository already has. Choose hexagonal architecture where a rich model needs protecting from its outside dependencies. Treat CQRS, event sourcing and distribution as things a context's needs must earn. Project names don't make a design domain-driven: four projects called Domain, Application, Infrastructure and API can still hide every rule in a controller.
 
 ## Layers, and which way dependencies point
 
@@ -22,7 +22,7 @@ Picture the application and domain as the inside, with a **port** for each way t
 - **Driving (primary) adapters** call in: a web controller, a message consumer, a scheduled job or a test.
 - **Driven (secondary) adapters** are called out to: a database, a message broker, an email service, an outside provider's API.
 
-Every adapter translates between the outside representation and the domain's types. Swapping an adapter, such as a real provider for a fake in tests, never touches the inside. Test the inside through its driving ports with in-memory driven adapters, and test each driven adapter against the real thing it wraps.
+Every adapter translates between the outside representation and the domain's types. Swapping an adapter, such as a real provider for a fake in tests, never touches the inside. A port earns its place when it protects a meaningful dependency, an ownership boundary or a real testing need. Having a production adapter and a test fake isn't proof enough on its own. A cross-provider integration with many formats and retries is technical complexity: give it a good adapter, and don't build a rich domain model for it unless the domain needs one. Test the inside through its driving ports with in-memory driven adapters, and test each driven adapter against the real thing it wraps.
 
 ## Application services
 
@@ -54,7 +54,7 @@ Whatever the transport, the downstream context translates into its own language 
 
 ## Eventual consistency, sagas and process managers
 
-When a business process spans aggregates or contexts, it can't be one transaction. Model it as a sequence of local transactions joined by events:
+When a business process spans aggregates or contexts, first check how strictly each rule must hold. If a rule must be true immediately, that's a reason to put it inside one boundary, not a step to make eventually consistent. Where the steps may settle over time, model the process as a sequence of local transactions joined by events:
 
 - Agree with the experts how long each step may take to become true, and what a user sees meanwhile.
 - When the steps need coordinating, use a **process manager** (also called a saga or long-running process): it reacts to events, sends the next command, tracks where the process is, and handles time-outs and compensating actions.

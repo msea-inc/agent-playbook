@@ -1,6 +1,6 @@
 # Tactical design
 
-The tactical patterns are how a model is built inside one bounded context. Use them where the domain has real rules, above all in the core domain. In a simple supporting or generic part, a plain transaction script or CRUD can be the right answer.
+The tactical patterns are how a rich model is built inside one bounded context. Each one should solve an identified problem: use them where the domain has interacting rules, invariants or lifecycle complexity, above all in the core domain. Where it hasn't, a transaction script or CRUD is the right answer (`choosing-the-approach.md`).
 
 ## Entities
 
@@ -26,18 +26,18 @@ A **value object** measures, quantifies or describes something, and has no ident
 
 An **aggregate** is a cluster of entities and value objects treated as one unit for consistency, with one entity as its **root**. Outside code refers only to the root. The aggregate boundary is the transaction boundary.
 
-Vernon's four rules for aggregate design:
+Vernon's guidance for aggregate design. Treat it as strong defaults that follow from the business requirement, not as unqualified rules:
 
 1. **Model true invariants in consistency boundaries.** An invariant is a rule that must always be true, immediately, after every transaction. Put inside one aggregate only what must be consistent with it at once. Group by invariant, not by "these things are related" or "the screen shows them together".
 2. **Design small aggregates.** Most aggregates are a root entity plus value objects. Large clusters cause contention between users, slow loading and transactions that fail for no domain reason. Start small and grow only when a true invariant demands it.
 3. **Reference other aggregates by identity.** Hold a `ProductId`, not a `Product`. That keeps aggregates small, makes the boundary visible, lets them be stored separately, and stops one transaction quietly reaching into several.
-4. **Use eventual consistency outside the boundary.** When a rule spans aggregates, change one in the transaction, publish a domain event, and update the others in their own transactions. Ask the experts how soon it must be true: the answer is often "within seconds" or "by the end of the day", not "atomically".
+4. **Treat consistency across boundaries carefully.** When a rule spans aggregates, first investigate what the business actually needs: ask the experts how soon it must be true, and what goes wrong if it briefly isn't. Often the answer is "within seconds" or "by the end of the day": then change one aggregate in the transaction, publish a domain event, and update the others in their own transactions. When it truly must hold at once, that's evidence the boundary is wrong (the invariant belongs in one aggregate) or that this is a justified exception. Don't prescribe eventual consistency by reflex.
 
 Reasons to break a rule, rarely and on purpose: the user interface genuinely needs one action to create several aggregates at once, there's no messaging or background processing available, or a global transaction is truly required. Write the reason down when you do.
 
 More on aggregates:
 
-- **One aggregate per transaction.** An application service that changes two aggregates in one transaction is the usual sign a rule is in the wrong place or a boundary is wrong.
+- **One aggregate per transaction, by default.** An application service that changes two aggregates in one transaction is usually a sign that a rule is in the wrong place or a boundary is wrong. Check the requirement before deciding which.
 - **Ask who's responsible.** If the rule is "this user's change must update that other aggregate", the update is often that other aggregate's job, triggered by an event.
 - **Protect the root.** Changes go through the root's methods. Nothing outside holds a reference to an inner entity.
 - **Optimistic concurrency.** Give the aggregate a version and fail a stale write, rather than locking.
@@ -48,6 +48,7 @@ More on aggregates:
 
 A **domain event** records something that happened that the experts care about, named in the past tense in the language: `OrderPlaced`, `PaymentDeclined`, `BacklogItemCommitted`.
 
+- Add an event only when something consumes it or the business needs the record. An event nobody reacts to is ceremony.
 - Listen for the phrases "when…", "if that happens…", "notify…" and "as a result…": they often mark an event.
 - An event is immutable and carries what a subscriber needs: the identities involved, the relevant values and when it occurred. Keep it small, but complete enough that subscribers don't have to call back.
 - The aggregate raises it as part of its behaviour. The application service saves the aggregate and the event together, then publishes.
@@ -58,7 +59,7 @@ A **domain event** records something that happened that the experts care about, 
 
 ## Repositories
 
-A **repository** gives the illusion of an in-memory collection of aggregates. There's one per aggregate type, never per table or entity.
+A **repository** gives the illusion of an in-memory collection of aggregates. There's one per aggregate type, never per table or entity, and only where there's an aggregate. A CRUD area uses the repository's ordinary data access instead (a gateway or active record).
 
 - The interface is in the domain layer, in the language (`ordersAwaitingShipment()`), and the implementation is an adapter in infrastructure.
 - **Collection-oriented** repositories behave like a set (`add`, and changes are tracked); **persistence-oriented** ones need an explicit `save`. Follow what the repository's persistence already does.
