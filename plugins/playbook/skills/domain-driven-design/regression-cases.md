@@ -29,8 +29,8 @@ Every change to the domain-driven-design skill is checked against them. They're 
 
 - **Situation:** A change uses one word for two different things owned by two areas.
 - **Uncertainty to uncover:** Whether these are separate contexts.
-- **Expected behaviour:** Names the context for each meaning, keeps one meaning per context, and uses or adds the glossary's word. It translates where the two meet.
-- **Unacceptable behaviour:** Builds one shared class to serve both meanings.
+- **Expected behaviour:** Investigates the differences in language, ownership and model. It confirms separate contexts only when they're justified, with translation where they meet. Otherwise it tells the concepts apart within the existing model, with distinct names from the glossary.
+- **Unacceptable behaviour:** Forces both meanings into one shared class, or adds a new context without evidence that one is needed.
 
 ## RC-DDD5: A CRUD feature whose rules have grown
 

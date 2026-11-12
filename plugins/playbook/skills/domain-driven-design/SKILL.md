@@ -14,7 +14,7 @@ Two references, used at different levels. They complement each other:
 - **Vaughn Vernon, *Implementing Domain-Driven Design* (IDDD):** the primary reference for strategic and tactical DDD. That means bounded contexts, context maps and the ubiquitous language, and then the modelling patterns.
 - **Martin Fowler, *Patterns of Enterprise Application Architecture* (PoEAA):** the reference for choosing how application logic and persistence are organised. That includes the simpler patterns, such as a transaction script, which is a deliberate architectural choice, not failed DDD.
 
-This skill is written in our own words; read the books for the full argument. When you record or report a design decision, name the revision you followed (this file's `version`), or say plainly that the skill wasn't loaded. It's guidance only and grants nothing. Follow `working-style` (in this plugin) whenever you report or ask.
+This skill is written in our own words; read the books for the full argument. When you record or report a design decision, name the revision you followed (this file's `version`), or say plainly that the skill wasn't loaded. That statement is disclosure, not proof: where a run produces the playbook's skill-load report, the report records the pinned library commit, each required skill's version and hash as verified on disk, and whether the runtime listed and used it. It's guidance only and grants nothing. Follow `working-style` (in this plugin) whenever you report or ask.
 
 References:
 

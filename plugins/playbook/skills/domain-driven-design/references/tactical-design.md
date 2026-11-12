@@ -91,6 +91,6 @@ Group domain code into **modules** named after domain concepts, inside the bound
 ## Tactical questions
 
 - Is this an entity or a value? If identity doesn't matter, make it a value object.
-- What invariant must be true immediately, and which single aggregate owns it?
-- Does this transaction change more than one aggregate? If so, which event should carry the rest?
+- What invariant must be true immediately, and what owns it: one aggregate, or another mechanism such as a constraint or a concurrency check?
+- Does this transaction change more than one aggregate? What consistency requirement justifies that? If the work can be separated, what mechanism coordinates it safely?
 - Does this behaviour belong on the root, a value object or a domain service?

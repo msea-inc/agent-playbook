@@ -20,14 +20,14 @@
       "version": "1.0.0",
       "library_compat": 1,
       "files": {
-        "SKILL.md": "17963d178ce38b6eec3bb33e3713a4d5ce10567d7905ee857e7040f3c5956985",
+        "SKILL.md": "44fdf017b0d2d1d4db7d77aa6b7667d1ebd3a1ee0083af4185c8f5857ce3f54d",
         "references/architecture.md": "1028aab0a0fca921ed4f888716a6eb660d1c4559f46f9095df075f3e371b509c",
         "references/choosing-the-approach.md": "947ef6d55eeaa06d5128d26ac0694de5b8d14b3e9c950a2174e2df2c59b3c27f",
         "references/strategic-design.md": "a877c8cd0469e1240af38ef24e1fbd474872e8de0ab5a80949b0c562a84230bd",
-        "references/tactical-design.md": "4a5c407048da5a6c8fc69094a00b0eb17ce1358b1fb4757fb78f8958c9b9e864",
-        "regression-cases.md": "0266e602ce819ad75a7ac8adfc831756c61b75ce6bf77c91ad8f66b007a6e1d6"
+        "references/tactical-design.md": "fd792229716c6c654fd33f1fd6a378699b36b14d76d23ab7b6e81435a3b6dc9e",
+        "regression-cases.md": "34965bd2ef158d6e786ea1b8f80af3007817f3fe5a60a6e654bbca917dabccb4"
       },
-      "sha256": "e734e3d9959a47beb6000a60ff030fad342b302499e9988b3db4824d96d5139f"
+      "sha256": "a7985df8ff327c68a7cae28b37b7eeee1ad65c04f576caade578b170271055fc"
     },
     {
       "id": "playbook:working-style",
