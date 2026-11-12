@@ -50,8 +50,8 @@ Every change to the domain-driven-design skill is checked against them. They're 
 
 - **Situation:** A rule says a total across several records must never exceed a limit, and the plan splits the records into separate aggregates.
 - **Uncertainty to uncover:** How strictly and how soon the rule must hold, and what happens if it's briefly broken.
-- **Expected behaviour:** Investigates the consistency requirement with the person or the evidence first. If it must hold at once, the boundary moves so one owner enforces it. If it may settle, it uses events with a stated delay and what the user sees meanwhile.
-- **Unacceptable behaviour:** Prescribes eventual consistency automatically, or one large transaction automatically, without checking the requirement.
+- **Expected behaviour:** Investigates the consistency requirement with the person or the evidence first. If it must hold at once, it compares the ways to enforce it: one owning boundary, a justified transaction, a database constraint or a concurrency check, and picks by evidence and cost. If it may settle, it uses events, with a stated delay and what the user sees meanwhile.
+- **Unacceptable behaviour:** Prescribes eventual consistency, one large aggregate or one large transaction automatically, without checking the requirement.
 
 ## RC-DDD8: A business rule in the application service
 
@@ -73,3 +73,31 @@ Every change to the domain-driven-design skill is checked against them. They're 
 - **Uncertainty to uncover:** Whether to change the approach silently.
 - **Expected behaviour:** Raises the contradiction with the evidence and a proposed adjustment, and follows the person's answer.
 - **Unacceptable behaviour:** Quietly introduces a domain model, or duplicates the invariant in both scripts.
+
+## RC-DDD11: Simple CRUD read against the architecture reference
+
+- **Situation:** A plain record-maintenance feature, read with both this skill and `references/architecture.md`.
+- **Uncertainty to uncover:** Whether the four-layer table and the thin-service rule apply to it.
+- **Expected behaviour:** Uses a transaction script or CRUD with the validation in the use-case procedure, and no separate domain layer, domain objects or repository interface.
+- **Unacceptable behaviour:** Creates a domain layer or four layers to satisfy the architecture reference.
+
+## RC-DDD12: Two contexts in one process
+
+- **Situation:** Two bounded contexts in one deployable need one to ask the other for a current value before acting.
+- **Uncertainty to uncover:** Whether messaging brings any needed benefit.
+- **Expected behaviour:** Chooses a well-defined synchronous interface owned by the upstream context, translated at the edge, with no broker, outbox or background consumer, and says what would justify messaging later.
+- **Unacceptable behaviour:** Adds asynchronous events between them because events are "the default".
+
+## RC-DDD13: CQRS with one database
+
+- **Situation:** A screen needs a read shape that would distort the write model, and everything lives in one database.
+- **Uncertainty to uncover:** Whether CQRS needs events or a separate store here.
+- **Expected behaviour:** Separates the read query or view from the write model over the same database, consistent at once, with no event pipeline or projection store.
+- **Unacceptable behaviour:** Invents events, asynchronous projections or a second database to "do CQRS".
+
+## RC-DDD14: An event that arrives out of order
+
+- **Situation:** A subscriber receives "cancelled" (version 3) and then "confirmed" (version 2) for the same record, each once.
+- **Uncertainty to uncover:** Whether de-duplication is enough.
+- **Expected behaviour:** Treats ordering separately from duplicates, and uses a version check, or another ordering mechanism, so the older event can't overwrite the newer state. It names the test.
+- **Unacceptable behaviour:** Relies on idempotency alone and leaves the record confirmed.

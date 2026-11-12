@@ -14,7 +14,7 @@ Two references, used at different levels. They complement each other:
 - **Vaughn Vernon, *Implementing Domain-Driven Design* (IDDD):** the primary reference for strategic and tactical DDD. That means bounded contexts, context maps and the ubiquitous language, and then the modelling patterns.
 - **Martin Fowler, *Patterns of Enterprise Application Architecture* (PoEAA):** the reference for choosing how application logic and persistence are organised. That includes the simpler patterns, such as a transaction script, which is a deliberate architectural choice, not failed DDD.
 
-This skill is written in our own words; read the books for the full argument. It's guidance only and grants nothing. Follow `working-style` (in this plugin) whenever you report or ask.
+This skill is written in our own words; read the books for the full argument. When you record or report a design decision, name the revision you followed (this file's `version`), or say plainly that the skill wasn't loaded. It's guidance only and grants nothing. Follow `working-style` (in this plugin) whenever you report or ask.
 
 References:
 
@@ -43,7 +43,7 @@ These cost almost nothing and apply to every change, CRUD included:
 - Use consistent, meaningful language: the domain's words, from the repository's glossary, in names, tests and messages.
 - Know who owns each decision and each piece of state. Each business invariant has exactly one clear owner. It is never duplicated, slightly differently, in a script and a domain object.
 - Make important constraints explicit.
-- Keep unrelated concepts from becoming entangled. When the same word means different things in different areas, those are different bounded contexts, and translation between them is explicit.
+- Keep unrelated concepts from becoming entangled. When the same word means different things in different areas, treat that as evidence to investigate a model boundary, not automatic permission to add a context. Where the investigation confirms separate contexts, translate between them explicitly.
 - Choose a design proportional to the problem.
 
 ## Selectively: tactical DDD
@@ -61,10 +61,10 @@ Entities, value objects, aggregates, repositories and domain events are there to
 
 | Situation | Start with |
 |---|---|
-| Simple record maintenance with straightforward validation | CRUD with a thin application or use-case layer; consider a transaction script |
+| Simple record maintenance with straightforward validation | A transaction script that holds the validation, over simple data access such as a table data gateway or active record |
 | Independent operations with limited business logic | Transaction scripts, extracting only genuinely shared behaviour |
 | Interacting rules, meaningful state transitions and invariants | A rich domain model, using the tactical patterns where justified |
-| The same terms mean different things in different areas | Explicit bounded contexts, with translation between their models |
+| The same terms mean different things in different areas | Investigate the boundary; where confirmed, explicit bounded contexts with translation between their models |
 | Existing code already expresses the rules well | Keep it, unless the change brings a concrete improvement |
 
 CRUD describes operations, not a complete architecture. So don't ask "DDD or CRUD?". Ask which domain-logic pattern and which persistence pattern fit (`references/choosing-the-approach.md`). One system can use different approaches in different areas.
@@ -90,7 +90,7 @@ Record a short decision for each area, with its reason and what would make you r
 
 > Use an aggregate for the booking lifecycle, because duplicate starts and invalid transitions must be prevented across several operations.
 
-Where the consistency of a rule matters, say which invariant it is, when it must hold and what the user sees in the meantime. Don't assume eventual consistency or strict consistency without asking (`references/architecture.md`). The architect doesn't invent findings about the code. It works from the engineer's evidence-backed packet of constraints.
+Where the consistency of a rule matters, say which invariant it is, when it must hold and what the user sees in the meantime. Don't assume eventual or strict consistency without asking. For a rule that must hold at once, compare the ways to enforce it: one owning boundary, a justified transaction, a database constraint or a concurrency check (`references/architecture.md`). Choose how contexts integrate the same way: an in-process interface, a remote call or messaging, as an explicit decision, not a default. The architect doesn't invent findings about the code. It works from the engineer's evidence-backed packet of constraints.
 
 ### Senior engineer: check the choice against the code
 
@@ -106,9 +106,9 @@ You should be able to say either "this needs richer modelling" or "this doesn't 
 ### Coding: implement the decision
 
 - Follow the approach the plan recorded. If the code contradicts it, for example a "simple" area turns out to have interacting rules, raise it. Don't silently change the approach.
-- Put each rule where the recorded approach puts it: on the aggregate or value object that owns it in a domain model, or in one clearly named script or function in a transaction-script area. Never put it in a controller or adapter.
+- Put each rule where the recorded approach puts it: on the aggregate or value object that owns it in a domain model, or in one clearly named script or function in a transaction-script area. Never put a business rule in a controller or adapter. Simple field validation declared on the request model is fine.
 - Keep the domain's words, and translate outside providers' models at the edge.
-- Test behaviour through the interface the approach gives you. In a domain model, test aggregates and value objects directly, and use cases with in-memory adapters. In a script, test the script.
+- Test behaviour through the interface the approach gives you. In a domain model, test aggregates and value objects directly, and use cases with in-memory adapters where a fake is useful. In a script, test the script. Don't build a fake only to have one.
 
 ### Review: catch both kinds of defect
 
@@ -117,7 +117,7 @@ Alongside the repository's own standards, look for:
 - **Over-engineering:**
   - wrappers that add nothing;
   - a repository for everything;
-  - events that nothing consumes;
+  - events that nothing consumes, or messaging between contexts where a direct interface would do;
   - layers that only pass data through;
   - aggregates with no invariant to protect;
   - distribution nobody needs.

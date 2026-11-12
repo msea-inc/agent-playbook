@@ -1,6 +1,6 @@
 # Tactical design
 
-The tactical patterns are how a rich model is built inside one bounded context. Each one should solve an identified problem: use them where the domain has interacting rules, invariants or lifecycle complexity, above all in the core domain. Where it hasn't, a transaction script or CRUD is the right answer (`choosing-the-approach.md`).
+The tactical patterns are how a rich model is built inside one bounded context. Each one should solve an identified problem: use them where the domain has interacting rules, invariants or lifecycle complexity, above all in the core domain. Where it hasn't, a transaction script over simple data access, such as a table data gateway or active record, is the right answer (`choosing-the-approach.md`).
 
 ## Entities
 
@@ -19,7 +19,7 @@ A **value object** measures, quantifies or describes something, and has no ident
 - Equal when all its attributes are equal.
 - Self-validating: it can't be created in an invalid state.
 - Side-effect-free behaviour: `price.withDiscount(rate)` computes; it doesn't save anything.
-- Prefer value objects over primitives and over entities. Model a concept as an entity only when its identity really matters over time. Money, date ranges, addresses, quantities, email addresses and statuses are usually values.
+- In a domain-model area, prefer value objects over primitives and over entities. In a transaction-script area, validate in the script and add a value object only where a value is validated or computed with in several places. Model a concept as an entity only when its identity really matters over time. Money, date ranges, addresses, quantities, email addresses and statuses are usually values.
 - Persist them as part of their owning entity (columns, an embedded document or a serialised field), not as tables with their own identity, unless storage forces it.
 
 ## Aggregates
@@ -31,7 +31,7 @@ Vernon's guidance for aggregate design. Treat it as strong defaults that follow 
 1. **Model true invariants in consistency boundaries.** An invariant is a rule that must always be true, immediately, after every transaction. Put inside one aggregate only what must be consistent with it at once. Group by invariant, not by "these things are related" or "the screen shows them together".
 2. **Design small aggregates.** Most aggregates are a root entity plus value objects. Large clusters cause contention between users, slow loading and transactions that fail for no domain reason. Start small and grow only when a true invariant demands it.
 3. **Reference other aggregates by identity.** Hold a `ProductId`, not a `Product`. That keeps aggregates small, makes the boundary visible, lets them be stored separately, and stops one transaction quietly reaching into several.
-4. **Treat consistency across boundaries carefully.** When a rule spans aggregates, first investigate what the business actually needs: ask the experts how soon it must be true, and what goes wrong if it briefly isn't. Often the answer is "within seconds" or "by the end of the day": then change one aggregate in the transaction, publish a domain event, and update the others in their own transactions. When it truly must hold at once, that's evidence the boundary is wrong (the invariant belongs in one aggregate) or that this is a justified exception. Don't prescribe eventual consistency by reflex.
+4. **Treat consistency across boundaries carefully.** When a rule spans aggregates, first investigate what the business actually needs: ask the experts how soon it must be true, and what goes wrong if it briefly isn't. Often the answer is "within seconds" or "by the end of the day": then change one aggregate in the transaction, publish a domain event, and update the others in their own transactions. When it truly must hold at once, compare the ways to enforce it: move the invariant into one aggregate if the boundary is wrong, or use a justified transaction across them, a database constraint or a concurrency check (`architecture.md`). Don't prescribe eventual consistency by reflex.
 
 Reasons to break a rule, rarely and on purpose: the user interface genuinely needs one action to create several aggregates at once, there's no messaging or background processing available, or a global transaction is truly required. Write the reason down when you do.
 
@@ -40,7 +40,7 @@ More on aggregates:
 - **One aggregate per transaction, by default.** An application service that changes two aggregates in one transaction is usually a sign that a rule is in the wrong place or a boundary is wrong. Check the requirement before deciding which.
 - **Ask who's responsible.** If the rule is "this user's change must update that other aggregate", the update is often that other aggregate's job, triggered by an event.
 - **Protect the root.** Changes go through the root's methods. Nothing outside holds a reference to an inner entity.
-- **Optimistic concurrency.** Give the aggregate a version and fail a stale write, rather than locking.
+- **Optimistic concurrency.** Give the aggregate a version and fail a stale write. Prefer that to locking, unless contention is high and waiting is better for the user.
 - **Tell, don't ask; and keep the law of Demeter.** Callers tell the root what to do instead of reaching inside it.
 - **Don't inject repositories or services into an aggregate.** Pass what a method needs as arguments, or move the coordination to a domain service.
 
@@ -50,19 +50,21 @@ A **domain event** records something that happened that the experts care about, 
 
 - Add an event only when something consumes it or the business needs the record. An event nobody reacts to is ceremony.
 - Listen for the phrases "when…", "if that happens…", "notify…" and "as a result…": they often mark an event.
-- An event is immutable and carries what a subscriber needs: the identities involved, the relevant values and when it occurred. Keep it small, but complete enough that subscribers don't have to call back.
+- An event is immutable and carries what a subscriber needs: the identities involved, the relevant values, when it occurred and, where order matters, the aggregate's version, so subscribers can refuse a stale event. Don't order by timestamp. Keep it small, but complete enough that subscribers don't have to call back.
 - The aggregate raises it as part of its behaviour. The application service saves the aggregate and the event together, then publishes.
 - **Inside the context**, a subscriber updates another aggregate in its own transaction, or triggers a side effect.
-- **Across contexts**, events are the default integration. To publish reliably, store events in the same transaction as the aggregate (an event store or outbox table) and forward them afterwards, so a crash can't lose one or publish one that never happened.
-- Subscribers must be **idempotent**: they may see the same event more than once, and in a different order from how it was raised. De-duplicate by event identity, or make the change naturally repeatable.
+- **Across contexts**, events are one integration choice among several (`architecture.md`). An internal domain event isn't automatically a stable external contract: map it to a published integration event deliberately. When you do publish, store events in the same transaction as the aggregate (an event store or outbox table) and forward them afterwards, so a crash can't lose one or publish one that never happened.
+- Plan separately for two delivery problems:
+  - **Duplicate delivery:** a subscriber may see the same event twice. De-duplicate by event identity, or make the effect naturally repeatable.
+  - **Out-of-order delivery:** an older event may arrive after a newer one. Handling each event exactly once doesn't fix that: if "cancelled" (version 3) arrives before "confirmed" (version 2), applying both leaves the wrong state. Use a version check so a stale event can't overwrite newer state, an ordering guarantee per aggregate, commutative operations, buffering, or reconciliation, as the case needs.
 - Events are also the raw material for audit, integration and, where it's earned, event sourcing.
 
 ## Repositories
 
-A **repository** gives the illusion of an in-memory collection of aggregates. There's one per aggregate type, never per table or entity, and only where there's an aggregate. A CRUD area uses the repository's ordinary data access instead (a gateway or active record).
+A **repository** gives the illusion of an in-memory collection of aggregates. There's one per aggregate type, never per table or entity, and only where there's an aggregate. A CRUD area uses the codebase's ordinary data access instead (a gateway or active record), with no Repository pattern.
 
 - The interface is in the domain layer, in the language (`ordersAwaitingShipment()`), and the implementation is an adapter in infrastructure.
-- **Collection-oriented** repositories behave like a set (`add`, and changes are tracked); **persistence-oriented** ones need an explicit `save`. Follow what the repository's persistence already does.
+- **Collection-oriented** repositories behave like a set (`add`, and changes are tracked); **persistence-oriented** ones need an explicit `save`. Follow what the codebase's persistence already does.
 - Load and save whole aggregates. Don't return or update parts of them.
 - Transactions are controlled by the application service, not by the repository or the domain.
 - Queries that serve screens, not behaviour, don't belong on the repository; see query models in `architecture.md`.
