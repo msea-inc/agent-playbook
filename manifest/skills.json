@@ -30,6 +30,20 @@
       "sha256": "a7985df8ff327c68a7cae28b37b7eeee1ad65c04f576caade578b170271055fc"
     },
     {
+      "id": "playbook:release-manager",
+      "name": "release-manager",
+      "version": "1.0.0",
+      "library_compat": 1,
+      "files": {
+        "SKILL.md": "18b6f5adacbb4e538983b806db0b7263725254b6a9be4684ee4bb30000eb02a9",
+        "references/new-project-setup.md": "2220d9afa680c9446f21cb62cb7bba72fc45586eea1d3665cfa3c5e820b8266f",
+        "references/versioning.md": "c1dfd6d997926fa784e8010bc05a9a97183177dc1c50959d083fd3f7eb3f0167",
+        "references/workflow-blueprint.md": "717d0b4f096ae9ae361414e0cf989b52286bb4f5f05701f958def393e1014e77",
+        "regression-cases.md": "8def3132a42184c54b51e0769dd4fe212a7800f530564f01678cae9e678e27cf"
+      },
+      "sha256": "df9bcd45cb2691d92f0849408bb53e3181e48a0a7cb5acb125d249c0d87a8a91"
+    },
+    {
       "id": "playbook:working-style",
       "name": "working-style",
       "version": "1.0.0",
