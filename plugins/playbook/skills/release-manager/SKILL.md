@@ -94,7 +94,7 @@ Once a release is live and its smoke checks pass, the workflow adds a comment to
 
 ## Setting up a new project
 
-Every new repository that deploys anything gets this route from its first pull request, following `references/new-project-setup.md`. Build it so that the person's future upgrade to GitHub's approve button (required reviewers on a protected environment) is a settings change, not a rewrite: give the live job its own `live` environment from day one, include the live Roll back option, and keep the version and notes in one script that can either build the link or create the release. `references/workflow-blueprint.md` explains both modes.
+Every new repository that deploys anything gets this route from its first pull request, following `references/new-project-setup.md`, as part of the base that `project-scaffold` (in this plugin) sets up. Build it so that the person's future upgrade to GitHub's approve button (required reviewers on a protected environment) is a settings change, not a rewrite: give the live job its own `live` environment from day one, include the live Roll back option, and keep the version and notes in one script that can either build the link or create the release. `references/workflow-blueprint.md` explains both modes.
 
 ## Never
 
