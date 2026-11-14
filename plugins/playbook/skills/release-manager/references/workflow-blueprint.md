@@ -27,12 +27,14 @@ One workflow, three stages: **Check**, **Deploy to staging**, **Release to live*
    - it's still the head of the default branch, checked again just before copying, so a slow or re-run job can't overwrite a newer release;
    - a guard that the destination is live and not staging.
 
-   Then back up, deploy, smoke-check. On failure, the summary says how to restore the backup, and what to do with the published release that didn't reach live.
+   Then back up, deploy, smoke-check, and tell the tasks (below). On failure, the summary says how to restore the backup, and what to do with the published release that didn't reach live.
 
 5. **Roll back** (Run workflow with target `rollback`, live only): uses live's settings and secrets only, in the `live` environment, and joins live's concurrency group so it never runs alongside a release. It takes an optional backup name; empty means the newest, which is the backup the last release took of the version before it. It:
    - restores that backup on the server so the folder matches it exactly (for example `rsync --delete --checksum` from the backup), then flushes any cache;
    - runs the smoke checks against the restored version;
    - records it on the releases page: the replaced release is renamed `Rolled back · {its title}`, marked as a pre-release, and given a note saying when, by which run, and which version is live again; the release that's live again is marked Latest.
+
+   After the smoke checks, it tells the tasks in the replaced release that it was rolled back.
 
    It never deletes a release or a tag, so versions never go backwards. If there's no backup, it stops and says so. A dry run lists what would be restored and changes nothing; that's how it's tested. The next normal release replaces the rolled-back state.
 
@@ -41,6 +43,16 @@ One workflow, three stages: **Check**, **Deploy to staging**, **Release to live*
 A pull request opened with the `staging` label already on it starts both an `opened` and a `labeled` run. The staging concurrency group runs them one after the other, and the second finds the same commit already deployed, so this is harmless.
 
 Each job's `name` is fixed text, because GitHub shows a skipped job's name exactly as written.
+
+## Telling the tasks
+
+A step at the end of Release to live (and of Roll back), after the smoke checks pass:
+
+1. **Find the tasks:** the task IDs in the `type(TaskID):` prefixes of the release's pull request titles, from the same list the next-version step builds. Nothing else is read.
+2. **Comment once on each:** `Released to live in vX.Y.Z` with the release's link, or `Rolled back from live: vX.Y.Z` for a roll back. Each comment ends with a hidden or plain marker such as `release-key: vX.Y.Z live`; before writing, read the task's comments and skip it if the marker is already there.
+3. **Never change a status,** and never fail the job: the step continues on error, and the summary lists each task as commented, already commented or failed, with the reason.
+
+The tracker's token is a secret passed only to this step. Without it, the step says so in the summary and does nothing.
 
 ## Run names
 

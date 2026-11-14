@@ -67,6 +67,14 @@ Everything merged since the last release goes out in the next one. Each merge's 
 
 When the person asks what's waiting to go live, answer from the same method: the last release, the pull requests merged since, the next version and why.
 
+## Telling the tasks
+
+Once a release is live and its smoke checks pass, the workflow adds a comment to every task in it: `Released to live in vX.Y.Z`, with a link to the release. The tasks are the IDs in its pull requests' `type(TaskID):` prefixes, the same ones the release notes list. It changes no status. A roll back comments `Rolled back from live: vX.Y.Z` on the same tasks. So anyone opening a task can see whether it's live, and in which version.
+
+- **It never holds up live.** If the tracker can't be reached, the release still counts as done, and the run summary says which comments failed.
+- **It never repeats itself.** Each comment carries a marker for its version, so a re-run adds nothing.
+- **It needs the tracker's token** as a secret, given only to that step. Tell the person where to add it; never ask for its value.
+
 ## Naming
 
 | Item | Name |

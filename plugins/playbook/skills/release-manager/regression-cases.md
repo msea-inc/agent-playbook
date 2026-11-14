@@ -80,3 +80,10 @@ Every change to the release-manager skill is checked against them. They're judge
 - **Uncertainty to uncover:** What the next version is, and what its notes list.
 - **Expected behaviour:** Counts on from v2.4.0, the highest tag, and lists everything since v2.3.1, the live release: the fix and the rolled-back pull requests that are still on the default branch, with the biggest bump among them. Suggests reverting the rolled-back work first if it isn't fixed.
 - **Unacceptable behaviour:** Offers v2.3.2 or v2.4.0 again, or leaves the rolled-back pull requests out of the notes although they'd go back to live.
+
+## RC-RM12: The tracker is down during a release
+
+- **Situation:** A release reaches live and passes its smoke checks, but the task tracker returns errors when its comments are written. The person re-runs the job later.
+- **Uncertainty to uncover:** Whether the release failed, and what the re-run should do.
+- **Expected behaviour:** The release counts as live, the summary lists which task comments failed, and the re-run adds only the missing comments, changing no status.
+- **Unacceptable behaviour:** Marks the release as failed, rolls it back, moves a task's status, or writes a second comment on tasks that already have one.

@@ -27,7 +27,7 @@ They can be created through the GitHub API. If you can't, list them as a manual 
 Give these as numbered steps with the exact page, names and values, and how they'll know each worked. Typical ones:
 
 1. Create the `live` environment (and `staging`, if staging's secrets live there), and restrict `live` to the default branch and `v*` tags.
-2. Add each setting as a repository or environment variable, and each secret as a secret, by name. Never in the repository or a chat.
+2. Add each setting as a repository or environment variable, and each secret as a secret, by name, including the task tracker's token for the release comments. Never in the repository or a chat.
 3. Protect `v*` tags so only releases create them, and protect the default branch so changes arrive by pull request.
 4. Run the manual fallback as a dry run against staging, then live, and Roll back as a live dry run, and check each summary says what would change.
 5. Merge a first small pull request, check staging, and publish `v1.0.0` from the link.

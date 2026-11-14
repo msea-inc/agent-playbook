@@ -35,13 +35,13 @@
       "version": "1.0.0",
       "library_compat": 1,
       "files": {
-        "SKILL.md": "7e2a900a3b9af22af613124f3a02bc71139f1843c82bb6db550be3693eee33b5",
-        "references/new-project-setup.md": "3b50c6b16aacfd9cc56f206309b5c709ee9d5b8524f93402517fb2d4e5074785",
+        "SKILL.md": "da76da66e347f73292879522d6c7b192d2d17a12f5bbb12b0165ac409f5d498b",
+        "references/new-project-setup.md": "8ea66cb4bce1484c6140174f10bb74916de43ca7d11140b57279c5eff306971b",
         "references/versioning.md": "c1dfd6d997926fa784e8010bc05a9a97183177dc1c50959d083fd3f7eb3f0167",
-        "references/workflow-blueprint.md": "673debf5fb144fcb29f89d9f3f4e4e771808c75dd7655cd38dddd897dc9ca4e9",
-        "regression-cases.md": "f70535f73d0bc21dd0194a564a4971e9d5f65887a177255b38e4f4313042ba5f"
+        "references/workflow-blueprint.md": "9f393ebe763f00fed63612ede8e68937aef17d65e6b350e6f3229cf566e18e5d",
+        "regression-cases.md": "89ac5e81b242ece7da41a6768b95dee5e32b7b45ce8df6c008f62176a298133b"
       },
-      "sha256": "e00c0a61af91dd0777af53a9e12d6410c4eb9b9e6b623ae3e28c4acb2b3ea0e8"
+      "sha256": "ba8db872663896ce560254b2b73300de39d23011c32911875c5440f08b058060"
     },
     {
       "id": "playbook:working-style",
