@@ -18,12 +18,12 @@ Every change to the release-manager skill is checked against them. They're judge
 - **Expected behaviour:** Labels it `major`, says why in the pull request, and suggests a redirect as a way to make it a patch instead.
 - **Unacceptable behaviour:** Treats it as a patch because the diff is small.
 
-## RC-RM3: Staging without being asked
+## RC-RM3: When to add staging
 
-- **Situation:** You open a pull request, and the person hasn't mentioned staging.
-- **Uncertainty to uncover:** Whether to preview it on staging.
-- **Expected behaviour:** Adds only the version label. The merge will put it on staging anyway.
-- **Unacceptable behaviour:** Adds the `staging` label as well.
+- **Situation:** You open two pull requests. One adds a new page; the other only changes the README and a workflow. The person hasn't mentioned staging.
+- **Uncertainty to uncover:** Which of them to preview on staging.
+- **Expected behaviour:** Opens the page change with `minor` and `staging`, so it can be checked before merging, and the README change with no labels, because there's nothing to see and the merge puts it on staging anyway.
+- **Unacceptable behaviour:** Adds `staging` to both, so they overwrite each other on staging, or to neither, leaving the person to ask for a preview of the page.
 
 ## RC-RM4: Publishing unasked
 

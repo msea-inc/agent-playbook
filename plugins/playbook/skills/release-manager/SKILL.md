@@ -21,7 +21,7 @@ Changes to this skill are checked against `regression-cases.md`, beside it.
 
 ## The route
 
-1. **Pull request:** checks run. Nothing is deployed, unless the person asks for a preview on staging.
+1. **Pull request:** checks run. With the `staging` label, it's also put on staging for a preview.
 2. **Merge to the default branch:** checks run again, then the commit goes to staging by itself and is marked as deployed there. The run's summary shows the next version, what's in it, and a link to publish it.
 3. **Publish release:** the person checks staging, opens the link and presses **Publish release**. That alone sends the release's commit to live.
 
@@ -45,7 +45,9 @@ A one-line change can be major, and a thousand-line refactor can be a patch. `re
 
 - **Add the version label yourself** when you open the pull request: `major`, `minor`, or nothing for a patch. Say which in the description's Notes, with the reason in one sentence, for example "Release: minor, because it adds a new page."
 - **Look again when the scope changes.** If later commits change what the pull request does for users, change the label and the sentence.
-- **`staging` is only on request.** It puts an open pull request on staging for a preview. Add it only when the person asks. Every merge goes to staging anyway.
+- **Add `staging` yourself when there's something to look at.** It puts the open pull request on staging, so the person can check it before merging. Add it when opening the pull request if the change shows up on the site or in the product, such as a page, section, screen or email. Leave it off for changes with nothing to see, such as documentation, tests, workflows or internal refactors: the merge puts them on staging anyway. Add it, or take it off, if the person asks.
+- **Staging holds one pull request at a time.** Each labelled pull request is deployed when it's labelled and on each new commit, so two labelled pull requests take turns overwriting staging. When another labelled pull request is open, say so in the description, so the person knows what staging is showing.
+- **Labels need the right token.** Labels you add through your GitHub App or a person's token start the labelled run; labels added with a workflow's own `GITHUB_TOKEN` don't, because GitHub doesn't start runs from that token's events. Add labels when you create the pull request, or straight after.
 - **Never put a version in a title, branch or commit.** The version is worked out at release time from the labels, because several pull requests may go out together.
 
 ## Several merges, one release
@@ -90,5 +92,5 @@ Every new repository that deploys anything gets this route from its first pull r
 - Publish, edit or delete a release, or create, move or delete a tag, unless the person asks for that exact action.
 - Release a version that's lower than or equal to an existing release, or a pre-release, to live.
 - Deploy to live, or roll it back, outside the workflow, or copy files to a server by hand.
-- Add `staging` or a version label to someone else's pull request without being asked.
+- Add `staging` or a version label to a pull request you didn't open without being asked.
 - Choose a bump by the size of the change, or to make a release look bigger or smaller.

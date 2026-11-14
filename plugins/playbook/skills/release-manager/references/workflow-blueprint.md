@@ -31,6 +31,8 @@ One workflow, three stages: **Check**, **Deploy to staging**, **Release to live*
 
 5. **Roll back** (Run workflow only, in the `live` environment, sharing live's concurrency group): restores the newest backup taken before the current live release, runs the smoke checks, and records it on the releases page: the current release's notes get a "Rolled back" line saying when, by which run, and which version is live again, and that release stops being marked as latest. It never deletes a release or tag, and a dry run lists what would be restored. If there's no backup to restore, it stops and says so. The next normal release replaces the rolled-back state.
 
+A pull request opened with the `staging` label already on it starts both an `opened` and a `labeled` run. The staging concurrency group runs them one after the other, and the second finds the same commit already deployed, so this is harmless.
+
 Each job's `name` is fixed text, because GitHub shows a skipped job's name exactly as written.
 
 ## Run names
