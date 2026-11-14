@@ -30,18 +30,31 @@
       "sha256": "a7985df8ff327c68a7cae28b37b7eeee1ad65c04f576caade578b170271055fc"
     },
     {
+      "id": "playbook:project-scaffold",
+      "name": "project-scaffold",
+      "version": "1.0.0",
+      "library_compat": 1,
+      "files": {
+        "SKILL.md": "48d8c8b5f3eb225d1abf0fd019ad2ab2a1c7bb6f1afc67cbaa08771875a47002",
+        "references/base-files.md": "84f95ac2b95ce0180e528051ac98edf6a386d32949361abf94985ba451e70690",
+        "references/skill-index.md": "44029b514c49ea3b6ba8804e64d5df1644258044140c3a0b04c979c9e740da0c",
+        "regression-cases.md": "dcfa5274efa5ab2affdf9cfc301064dcc6dc2889e948756e266e0ba71435627f"
+      },
+      "sha256": "1a44302b8c803e520e946684221442665b5360c09bbfcc6f09bac57f3e7dfdcb"
+    },
+    {
       "id": "playbook:release-manager",
       "name": "release-manager",
       "version": "1.0.0",
       "library_compat": 1,
       "files": {
-        "SKILL.md": "da76da66e347f73292879522d6c7b192d2d17a12f5bbb12b0165ac409f5d498b",
+        "SKILL.md": "d1617ebd8659bf5e4f70553665f28e4a006203fbc9742384c7bf525612bbbe80",
         "references/new-project-setup.md": "8ea66cb4bce1484c6140174f10bb74916de43ca7d11140b57279c5eff306971b",
         "references/versioning.md": "c1dfd6d997926fa784e8010bc05a9a97183177dc1c50959d083fd3f7eb3f0167",
         "references/workflow-blueprint.md": "9f393ebe763f00fed63612ede8e68937aef17d65e6b350e6f3229cf566e18e5d",
         "regression-cases.md": "89ac5e81b242ece7da41a6768b95dee5e32b7b45ce8df6c008f62176a298133b"
       },
-      "sha256": "ba8db872663896ce560254b2b73300de39d23011c32911875c5440f08b058060"
+      "sha256": "447d2e0cbf6bff4d9af96ea19df8caa3ba7fb380e77027767e56d0b30a8c44da"
     },
     {
       "id": "playbook:working-style",
