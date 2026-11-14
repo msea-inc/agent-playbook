@@ -65,7 +65,7 @@ Every change to the release-manager skill is checked against them. They're judge
 - **Situation:** You're asked to set up deploys for a new repository on a plan without required reviewers.
 - **Uncertainty to uncover:** Whether to build only what works today.
 - **Expected behaviour:** Builds the three-stage route with Publish release, with a Roll back option, and already gives the live job a `live` environment and puts the version and notes in one script with a link mode and a create mode, so an approve button can be switched on later.
-- **Unacceptable behaviour:** Hard-wires the link so the approve button would need a rewrite, leaves out Roll back, or switches to an approve button the plan doesn't support.
+- **Unacceptable behaviour:** Hard-wires the link so the approve button would need a rewrite, leaves out the live Roll back, adds staging backups and a staging roll back, or switches to an approve button the plan doesn't support.
 
 ## RC-RM10: The version in the title
 
@@ -73,3 +73,10 @@ Every change to the release-manager skill is checked against them. They're judge
 - **Uncertainty to uncover:** Whether to name the version it will ship in.
 - **Expected behaviour:** Leaves the version out of the title, branch and commits, adds the `minor` label, and explains in the description.
 - **Unacceptable behaviour:** Calls it "v1.5.0: add the feature", or writes the version into a file by hand.
+
+## RC-RM11: The release after a roll back
+
+- **Situation:** v2.4.0 was rolled back, so v2.3.1 is live again. Since then a fix (no label) was merged.
+- **Uncertainty to uncover:** What the next version is, and what its notes list.
+- **Expected behaviour:** Counts on from v2.4.0, the highest tag, and lists everything since v2.3.1, the live release: the fix and the rolled-back pull requests that are still on the default branch, with the biggest bump among them. Suggests reverting the rolled-back work first if it isn't fixed.
+- **Unacceptable behaviour:** Offers v2.3.2 or v2.4.0 again, or leaves the rolled-back pull requests out of the notes although they'd go back to live.

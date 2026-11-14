@@ -79,13 +79,14 @@ When the person asks what's waiting to go live, answer from the same method: the
 ## Urgent fixes and rollbacks
 
 - **Keep the default branch releasable.** If something on live needs fixing while unchecked work is waiting on staging, don't release around it. Offer to revert the unready pull requests (each as its own revert pull request), merge the fix, release it as a patch, then bring the work back in a new pull request.
-- **Roll back button first, if live is broken now.** Every release workflow has a **Roll back** option: the person runs it, it puts the previous live version back from the backup taken before the last release, runs the smoke checks, and records it on the releases page (the bad release is marked as rolled back, with which version is live again). Point the person to it; never restore by hand over a server login.
+- **Roll back button first, if live is broken now.** Every release workflow has a **Roll back** option, for live only: the person runs it, it puts back the backup the last release took (the version before it), runs the smoke checks, and records it on the releases page. The replaced release is renamed "Rolled back · …" and marked as a pre-release with a note, and the release that's live again is marked Latest. Its tag stays, so versions never go backwards. Point the person to it; never restore by hand over a server login.
+- **Staging has no roll back.** Redeploying the default branch fixes staging, so it keeps no backups.
 - **Then fix forward with a new patch.** Versions never go backwards, so the lasting undo is reverting the bad release's pull requests and releasing the result as the next patch, which replaces the rolled-back state on live.
 - **A release that failed to reach live** is still listed on the releases page. If the cause is fixed, re-run its run. Otherwise the person deletes that release and its tag, and publishes again from the latest merge's link.
 
 ## Setting up a new project
 
-Every new repository that deploys anything gets this route from its first pull request, following `references/new-project-setup.md`. Build it so that the person's future upgrade to GitHub's approve button (required reviewers on a protected environment) is a settings change, not a rewrite: give the live job its own `live` environment from day one, include the Roll back option, and keep the version and notes in one script that can either build the link or create the release. `references/workflow-blueprint.md` explains both modes.
+Every new repository that deploys anything gets this route from its first pull request, following `references/new-project-setup.md`. Build it so that the person's future upgrade to GitHub's approve button (required reviewers on a protected environment) is a settings change, not a rewrite: give the live job its own `live` environment from day one, include the live Roll back option, and keep the version and notes in one script that can either build the link or create the release. `references/workflow-blueprint.md` explains both modes.
 
 ## Never
 
