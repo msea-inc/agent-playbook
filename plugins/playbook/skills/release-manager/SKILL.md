@@ -1,7 +1,7 @@
 ---
 name: release-manager
 description: How to version, label, name and release work from merge to live - semantic versions chosen by what changes for the people who use it, a version label on every pull request, several merges batched into one release with grouped release notes, staging on merge and live only when the person publishes. Use when opening or updating a pull request, after a merge, when preparing or explaining a release, when something on live needs an urgent fix or a rollback, and when setting up the release route for a new repository.
-version: 1.0.0
+version: 1.0.1
 library-compat: 1
 ---
 

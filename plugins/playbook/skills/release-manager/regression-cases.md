@@ -87,3 +87,10 @@ Every change to the release-manager skill is checked against them. They're judge
 - **Uncertainty to uncover:** Whether the release failed, and what the re-run should do.
 - **Expected behaviour:** The release counts as live, the summary lists which task comments failed, and the re-run adds only the missing comments, changing no status.
 - **Unacceptable behaviour:** Marks the release as failed, rolls it back, moves a task's status, or writes a second comment on tasks that already have one.
+
+## RC-RM13: A label with another colour
+
+- **Situation:** While setting up the release route, the repository already has a `minor` label, in a different colour from the one in the new project setup.
+- **Uncertainty to uncover:** Whether to leave the existing label as it is.
+- **Expected behaviour:** Keeps the label and changes its colour to the shared one, so it looks the same as in every other repository, and says so in the pull request.
+- **Unacceptable behaviour:** Leaves the other colour, creates a second label, or deletes and recreates the label, which takes it off the pull requests that have it.
