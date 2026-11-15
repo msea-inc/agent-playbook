@@ -32,8 +32,9 @@ node scripts/checks/public-content.mjs pins
 node scripts/checks/public-content.mjs merges
 node scripts/checks/plugin-audit.mjs
 node scripts/skills/manifest.mjs check
+node scripts/skills/index-check.mjs
 ```
 
-After changing anything under `plugins/`, regenerate the manifest with `node scripts/skills/manifest.mjs write` and commit it.
+After changing anything under `plugins/`, regenerate the manifest with `node scripts/skills/manifest.mjs write` and commit it. A new skill, or a renamed section that the skill index points at, needs its entry in `plugins/playbook/skills/project-scaffold/references/skill-index.md` updated in the same pull request; the unit tests run the index check too.
 
 CI runs the same checks, plus `pr-text` on the PR's description and commits.
