@@ -12,15 +12,17 @@ Do this as the repository's first deploy pull request, under its own task, and f
 
 ## 2. Labels
 
-Create the three labels if they don't exist, so pull requests can use them from the first day:
+Create the three labels if they don't exist, so pull requests can use them from the first day. Give each one the colour below, the same in every repository, so a label looks the same wherever the person sees it:
 
-| Label | Meaning |
-|---|---|
-| `major` | The next release is a major one. |
-| `minor` | The next release is a minor one. |
-| `staging` | Put this open pull request on staging for a preview. |
+| Label | Meaning | Colour |
+|---|---|---|
+| `major` | The next release is a major one. | `#DC2626` |
+| `minor` | The next release is a minor one. | `#F97316` |
+| `staging` | Put this open pull request on staging for a preview. | `#00B40F` |
 
-They can be created through the GitHub API. If you can't, list them as a manual step.
+If a label already exists with another colour, change its colour to match rather than leaving it.
+
+They can be created and recoloured through the GitHub API, which takes the colour without the `#`. If you can't, list them as a manual step, with each label's colour.
 
 ## 3. Manual steps for the person
 
