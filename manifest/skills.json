@@ -37,10 +37,10 @@
       "files": {
         "SKILL.md": "48d8c8b5f3eb225d1abf0fd019ad2ab2a1c7bb6f1afc67cbaa08771875a47002",
         "references/base-files.md": "84f95ac2b95ce0180e528051ac98edf6a386d32949361abf94985ba451e70690",
-        "references/skill-index.md": "44029b514c49ea3b6ba8804e64d5df1644258044140c3a0b04c979c9e740da0c",
+        "references/skill-index.md": "283beacbf90b4bd8a2771cf0521ae9114fb596905cf0a913afbe32646ec6db72",
         "regression-cases.md": "dcfa5274efa5ab2affdf9cfc301064dcc6dc2889e948756e266e0ba71435627f"
       },
-      "sha256": "1a44302b8c803e520e946684221442665b5360c09bbfcc6f09bac57f3e7dfdcb"
+      "sha256": "9b15772ca0358ca2f8b7ce9060ad1afb71b8d2592ac051ceeac72dd92e3998e4"
     },
     {
       "id": "playbook:release-manager",
@@ -55,6 +55,19 @@
         "regression-cases.md": "376bedcac08eb7e4090c5561d25f2743c2d8e32faaedbb6fd41ea6128d4d5619"
       },
       "sha256": "a7e6710187661cab25570b43fafc00936927871f74de696da39a01b5f03d4c63"
+    },
+    {
+      "id": "playbook:tdd",
+      "name": "tdd",
+      "version": "1.0.0",
+      "library_compat": 1,
+      "files": {
+        "SKILL.md": "44487329c252fc30078f815a2ed4458de4ebb58342f7f10e7e5042a35024def1",
+        "references/good-and-bad-tests.md": "caa2992ec6615695057bf74aeecdc86ab5ce1ec29376e44783ee386d1b145628",
+        "references/test-layers.md": "6a48d383f44d831cdf39efe5bd0cb65fdc3ef6b96cc99695fe784dfa25738bb4",
+        "regression-cases.md": "bafbbb3284d670c14a908c1d7cd83680dc019e13bfe1def42c0bdae6d21d4e56"
+      },
+      "sha256": "71bcd05fc7e92fde4b23a0d65bcc8c2ba4a82ab91657f40a358c595af965792f"
     },
     {
       "id": "playbook:working-style",

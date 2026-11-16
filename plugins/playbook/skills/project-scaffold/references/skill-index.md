@@ -30,6 +30,14 @@ Organisations may keep more skills of their own in a private config repository. 
   - `domain-driven-design/SKILL.md` › Choosing a starting point
   - `domain-driven-design/references/strategic-design.md` › Bounded contexts
 
+## playbook:tdd
+
+- **Use when:** writing or changing code for a task, fixing a bug, or when the person asks for TDD or red-green-refactor.
+- **Scaffold takes:** where tests go, in the agent instructions' own rules, and writing the deploy-exclusions test test-first.
+- **Read first:**
+  - `tdd/SKILL.md` › The loop
+  - `tdd/SKILL.md` › Seams: where tests go
+
 ## playbook:release-manager
 
 - **Use when:** opening or updating a pull request (labels), after a merge, preparing or explaining a release, an urgent fix or a roll back, or setting up a release route.
