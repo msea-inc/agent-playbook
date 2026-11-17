@@ -5,14 +5,14 @@
     {
       "id": "playbook:code-review",
       "name": "code-review",
-      "version": "1.1.0",
+      "version": "1.2.0",
       "library_compat": 1,
       "files": {
-        "SKILL.md": "9a10f7ef2e4bd14322efa5b2a26b6867f05350843c148ff48888a5a3a0a530cc",
+        "SKILL.md": "d5d5bdea8be5c8931eb7ece09d2e74aee2b8477e54b5a87bf306d13c260028c5",
         "references/smells.md": "8a3f39e0821bc7e7a633211b0d2f33a209fab8b55e18465d8912bbe2fd003f6c",
-        "regression-cases.md": "8692d71a802c8929467bf21dcfe5aa92ceb4323889af5a772e3eee727e885764"
+        "regression-cases.md": "b7a2c413bd365a97937850585000bc66c9bbf393fff1b411d462f19814c5384b"
       },
-      "sha256": "1b337c489c38543e281c2a20142ff7bb8d1376ae3f82dfda2f63ca57010d2d12"
+      "sha256": "699ce2a18431f611b98f1912847cf8be08ad42e6b378eebb382a6e17acb67586"
     },
     {
       "id": "playbook:domain-driven-design",
@@ -32,15 +32,15 @@
     {
       "id": "playbook:project-scaffold",
       "name": "project-scaffold",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "library_compat": 1,
       "files": {
-        "SKILL.md": "48d8c8b5f3eb225d1abf0fd019ad2ab2a1c7bb6f1afc67cbaa08771875a47002",
-        "references/base-files.md": "84f95ac2b95ce0180e528051ac98edf6a386d32949361abf94985ba451e70690",
-        "references/skill-index.md": "44029b514c49ea3b6ba8804e64d5df1644258044140c3a0b04c979c9e740da0c",
-        "regression-cases.md": "dcfa5274efa5ab2affdf9cfc301064dcc6dc2889e948756e266e0ba71435627f"
+        "SKILL.md": "b00bd9960210b3a1c7f573cb4442dbc1785265d8e8c60e3f912d56592f0b3847",
+        "references/base-files.md": "52e1c512745d2c80caadae790435e6ff35cb9b7726545cc6c2caf5ac9ee9d228",
+        "references/skill-index.md": "b9552595230c4bfe827cc185734325d10544b1575942e6f11e1531c790bb6e94",
+        "regression-cases.md": "c34418defe11d971204c988239949f30807e6246af696a4aed2e5a077fd1b07f"
       },
-      "sha256": "1a44302b8c803e520e946684221442665b5360c09bbfcc6f09bac57f3e7dfdcb"
+      "sha256": "7e619df3fb63b14586d2d8df263144e87231db3833e8c29f30e5b32ff368400b"
     },
     {
       "id": "playbook:release-manager",
@@ -55,6 +55,17 @@
         "regression-cases.md": "376bedcac08eb7e4090c5561d25f2743c2d8e32faaedbb6fd41ea6128d4d5619"
       },
       "sha256": "a7e6710187661cab25570b43fafc00936927871f74de696da39a01b5f03d4c63"
+    },
+    {
+      "id": "playbook:secret-safety",
+      "name": "secret-safety",
+      "version": "1.0.0",
+      "library_compat": 1,
+      "files": {
+        "SKILL.md": "9c3a2e152a41f26536f66d018436508197f372e2754ed6b90af37df04aa289db",
+        "regression-cases.md": "dbafdf98581d46a29136adf8fe52a0e86aef4efe4ee10c425720582740b09a9a"
+      },
+      "sha256": "5334813e2bfffe3e3dbd80a198095682646a6b71036dcde7ff0d6791ec0d56fd"
     },
     {
       "id": "playbook:working-style",

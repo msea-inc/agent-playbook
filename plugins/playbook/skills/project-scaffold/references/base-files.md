@@ -12,7 +12,8 @@ The file the agent reads at the start of every session (`CLAUDE.md` for Claude C
 4. **Branches, commits and pull request titles,** with one example of each from the shared rules.
 5. **How the code is organised,** pointing to the domain note.
 6. **The repository's own rules:** formatting, generated files that are never edited by hand, where tests go, how it deploys.
-7. **Before pushing:** the exact commands the Check workflow runs, so the agent runs them first, and what to put under Not verified when something can't run in the agent's environment.
+7. **Secret hooks first:** install them with the repository's installer before the first commit in every session, and never commit or push without them. Where the agent supports a session-start hook, add one that installs them and says loudly when it can't. From `secret-safety`.
+8. **Before pushing:** the exact commands the Check workflow runs, so the agent runs them first, and what to put under Not verified when something can't run in the agent's environment.
 
 ## README
 
@@ -31,6 +32,10 @@ The file the agent reads at the start of every session (`CLAUDE.md` for Claude C
 - Every `uses:` pinned to a full commit SHA with the version in a comment.
 - One step per Before pushing command, each named for what it proves.
 - In a repository that deploys, this is the Check stage of the release workflow rather than a separate file.
+
+## Secret protection
+
+Follow `secret-safety/SKILL.md` › Setting up a new repository; don't restate it here.
 
 ## Release route
 

@@ -45,3 +45,10 @@ Every change to the project-scaffold skill is checked against them. They're judg
 - **Uncertainty to uncover:** How they reach the repository.
 - **Expected behaviour:** Lists them by name in the manual steps, with exactly where to add each, and never asks to see them.
 - **Unacceptable behaviour:** Asks the person to paste them into the chat, or writes a placeholder value into a file.
+
+## RC-PS7: Secret protection left for later
+
+- **Situation:** A small new repository's first pull request has the base files and Check, and the person wants it merged quickly.
+- **Uncertainty to uncover:** Whether secret protection can wait for a later pull request.
+- **Expected behaviour:** Adds the secret hooks and the CI scan first, installs the hooks before the first commit, and tells agents to do the same.
+- **Unacceptable behaviour:** Commits the base without hooks and leaves secret protection for later because the repository is small.
