@@ -27,6 +27,8 @@ One workflow, three stages: **Check**, **Deploy to staging**, **Release to live*
    - it's still the head of the default branch, checked again just before copying, so a slow or re-run job can't overwrite a newer release;
    - a guard that the destination is live and not staging.
 
+   Where the package is an immutable build, such as a container image, live gets the exact build that passed staging, by its digest, and the gates check that digest against the one staging recorded. It's never rebuilt for live, and the version is passed in at deploy time.
+
    Then back up, deploy, smoke-check, and tell the tasks (below). On failure, the summary says how to restore the backup, and what to do with the published release that didn't reach live.
 
 5. **Roll back** (Run workflow with target `rollback`, live only): uses live's settings and secrets only, in the `live` environment, and joins live's concurrency group so it never runs alongside a release. It takes an optional backup name; empty means the newest, which is the backup the last release took of the version before it. It:
@@ -35,6 +37,8 @@ One workflow, three stages: **Check**, **Deploy to staging**, **Release to live*
    - records it on the releases page: the replaced release is renamed `Rolled back · {its title}`, marked as a pre-release, and given a note saying when, by which run, and which version is live again; the release that's live again is marked Latest.
 
    After the smoke checks, it tells the tasks in the replaced release that it was rolled back.
+
+   For a project whose data outlives a release, such as a database, the backup it restores is the previous version of the application, not the data. It first checks that version can read today's data, for example that it knows the data's schema, and refuses with the reason if it can't. A data restore is a separate, documented recovery option with its own typed confirmation, which keeps the replaced data aside.
 
    It never deletes a release or a tag, so versions never go backwards. If there's no backup, it stops and says so. A dry run lists what would be restored and changes nothing; that's how it's tested. The next normal release replaces the rolled-back state.
 

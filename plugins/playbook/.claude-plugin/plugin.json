@@ -1,6 +1,6 @@
 {
   "name": "playbook",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Generic methods agents use in any project.",
   "author": { "name": "msea-inc" },
   "repository": "https://github.com/msea-inc/agent-playbook"

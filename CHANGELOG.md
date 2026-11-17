@@ -4,6 +4,11 @@ Each release says what changed, whether it's compatible, any configuration a cal
 
 ## Unreleased
 
+## 0.3.0 (2026-11-17)
+
+Compatible: callers change nothing. To use the new skills, pin this release's commit.
+
+- **Changed:** `release-manager` 1.0.2 covers immutable builds and stored data, and the website route reads as before. A container image is built once per commit and promoted by its digest, never rebuilt for live, with the version passed in at deploy time. Roll back puts back the previous application, never the data: it refuses when that version can't read today's data, and data is restored only through the project's documented recovery procedure.
 - **Added:** the `secret-safety` skill, used by every agent before every commit and push: check the repository's secret hooks are installed before the first commit and install them if not, scan every commit and push, write setup steps, examples and fixtures that never look like credentials, and fix a false positive in the scan's rule with two tests instead of bypassing or rewording around it. A pushed flag is cleared only with the person's yes to rewrite that branch. It also says what secret protection every new repository gets.
 - **Changed:** `code-review` 1.2.0 confirms the secret scan ran on every commit in the change, and reports a commit made without the secret hooks as a hard violation.
 - **Changed:** `project-scaffold` 1.1.0 adds secret protection to the base, first in the order, and the agent instructions tell every agent to install the hooks before their first commit.
@@ -13,6 +18,10 @@ Each release says what changed, whether it's compatible, any configuration a cal
 - **Added:** the `domain-driven-design` skill, the shared design policy: domain-led design everywhere, with rich modelling only where interacting rules, invariants or lifecycle complexity earn it. It uses Vaughn Vernon's *Implementing Domain-Driven Design* for strategic and tactical DDD, and Martin Fowler's *Patterns of Enterprise Application Architecture* for choosing simpler patterns such as transaction scripts and CRUD. It says what the architect, engineer, coding and review roles each do with it, treats over-engineering and under-modelling as defects, and the repository's own rules still win.
 - **Changed:** `code-review` 1.1.0 carries the domain-driven-design review checks for over-engineering and under-modelling on the standards axis, as judgement calls unless the repository documents the rule.
 - **Added:** `release.yml` creates each release when the pull request that adds its `CHANGELOG.md` section merges, at the merge commit, with that section as its notes. It never moves or replaces an existing tag.
+
+**Configuration:** none. The new `secret-safety` skill tells agents to install each repository's own secret hooks; a repository without them is told to add them.
+
+**Rollback:** revert the caller's pin pull request. Nothing this release writes needs undoing.
 
 ## 0.2.0 (2026-11-07)
 

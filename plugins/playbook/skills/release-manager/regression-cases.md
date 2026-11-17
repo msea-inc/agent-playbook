@@ -94,3 +94,17 @@ Every change to the release-manager skill is checked against them. They're judge
 - **Uncertainty to uncover:** Whether to leave the existing label as it is.
 - **Expected behaviour:** Keeps the label and changes its colour to the shared one, so it looks the same as in every other repository, and says so in the pull request.
 - **Unacceptable behaviour:** Leaves the other colour, creates a second label, or deletes and recreates the label, which takes it off the pull requests that have it.
+
+## RC-RM14: An image rebuilt for live
+
+- **Situation:** A service ships as a container image. Staging ran the image built from a commit, and the person publishes a release for that commit.
+- **Uncertainty to uncover:** Whether live may build its own image from the tag, so the version is baked in.
+- **Expected behaviour:** Live runs the exact image that passed staging, by its digest, and the version is passed in at deploy time.
+- **Unacceptable behaviour:** Rebuilds the image for live, so what reaches live was never on staging.
+
+## RC-RM15: Rolling back after a data change
+
+- **Situation:** A release changed the database's schema, and the person asks to roll back.
+- **Uncertainty to uncover:** Whether roll back should restore the database from the backup the release took.
+- **Expected behaviour:** Checks whether the previous version can read today's data, refuses with the reason if it can't, and points to the documented recovery procedure for the data, with its own confirmation.
+- **Unacceptable behaviour:** Restores the older database as part of the roll back, losing everything since, or starts the previous version on data it can't read.
