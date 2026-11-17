@@ -1,6 +1,6 @@
 {
   "plugin": "playbook",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "skills": [
     {
       "id": "playbook:code-review",
@@ -32,29 +32,29 @@
     {
       "id": "playbook:project-scaffold",
       "name": "project-scaffold",
-      "version": "1.1.0",
+      "version": "1.1.1",
       "library_compat": 1,
       "files": {
-        "SKILL.md": "b00bd9960210b3a1c7f573cb4442dbc1785265d8e8c60e3f912d56592f0b3847",
-        "references/base-files.md": "52e1c512745d2c80caadae790435e6ff35cb9b7726545cc6c2caf5ac9ee9d228",
-        "references/skill-index.md": "b9552595230c4bfe827cc185734325d10544b1575942e6f11e1531c790bb6e94",
+        "SKILL.md": "12637dbf3bad887e2f1dc9f630f006d0c2660e322912541f8edcc4a0da243d17",
+        "references/base-files.md": "1ac8303621b96b1893b858282cc4a0db3e31f10d883bea33534914b71e961337",
+        "references/skill-index.md": "dce18de782fbedd0778757d28f960d9d6d92a191182be38b23f5caad654affaa",
         "regression-cases.md": "c34418defe11d971204c988239949f30807e6246af696a4aed2e5a077fd1b07f"
       },
-      "sha256": "7e619df3fb63b14586d2d8df263144e87231db3833e8c29f30e5b32ff368400b"
+      "sha256": "f2ebd2bd1fd04070ee2412f764fbe8c63ba843954ee5fece8e80a283a1b27814"
     },
     {
       "id": "playbook:release-manager",
       "name": "release-manager",
-      "version": "1.0.2",
+      "version": "1.1.0",
       "library_compat": 1,
       "files": {
-        "SKILL.md": "8e6850d242467b1f269167950d52ac5ec25ccd1f01bc71c8838c8fe787e9a9e9",
-        "references/new-project-setup.md": "80959a5e86f2d9721d5d8a443938e9946f412e66debd005bac8b9f0cadaf87f2",
+        "SKILL.md": "be8b7555cf5d61bbeb6f8042e51b31affd82a8473379042b09b71fa87f93f51b",
+        "references/new-project-setup.md": "b0ad948c5eb3ead3c622f19891d5ce8871fd0227751acce5e6cb087ff9d6e947",
         "references/versioning.md": "c1dfd6d997926fa784e8010bc05a9a97183177dc1c50959d083fd3f7eb3f0167",
-        "references/workflow-blueprint.md": "041dcb9cedbb7e570e9123fe695870cf5cf2b83ce30c389962c0218b1119b3e5",
-        "regression-cases.md": "46f964bff9c50883ae52db3c90f216524990f70916adad888dbadff76561ca2c"
+        "references/workflow-blueprint.md": "ec8d19722da887521c8002f8e35e1846c7a7bd23592a2bb3d393be24b15db738",
+        "regression-cases.md": "d2c6b370c2a4ab18f91ee05c190c433894fde12fcc6075cd7300ca4ed97c6427"
       },
-      "sha256": "17a5e701c6c2539d8de60b2f0beb951356d1d73d2b0f1d22acdc3e5e7706c250"
+      "sha256": "f21fa6d1cf2b4c584036b554d047b8e92c931478b87e67d5a5e49780f89026dc"
     },
     {
       "id": "playbook:secret-safety",

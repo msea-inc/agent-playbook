@@ -19,7 +19,7 @@ The file the agent reads at the start of every session (`CLAUDE.md` for Claude C
 
 - What it is, and the live and staging addresses if it has them.
 - How to run it locally, and how to test it.
-- **Deploying:** the route in plain words (pull request, merge to staging, Publish release to live, Roll back), every setting and secret by name and where it goes, how to do a dry run, and how to restore. From `release-manager`'s new-project setup.
+- **Deploying:** the route in plain words (pull request, merge to staging and the draft release, publish the draft to release to live, Roll back), every setting and secret by name and where it goes, how to do a dry run, and how to restore. From `release-manager`'s new-project setup.
 
 ## Pull request template
 
@@ -31,7 +31,7 @@ The file the agent reads at the start of every session (`CLAUDE.md` for Claude C
 - `permissions: contents: read` and nothing else; no secrets.
 - Every `uses:` pinned to a full commit SHA with the version in a comment.
 - One step per Before pushing command, each named for what it proves.
-- In a repository that deploys, this is the Check stage of the release workflow rather than a separate file.
+- In a repository that deploys, this is the Check stage of the staging and live workflows rather than a separate file.
 
 ## Secret protection
 
