@@ -1,7 +1,7 @@
 ---
 name: project-scaffold
 description: How to start a new repository or project from the shared template - the same agent instructions, README, pull request template, checks, release route, task finishing and labels every time - and where each shared skill keeps the detail, through one index. Use when creating a new repository or project, adding the standard files to a repository that lacks them, or when you need to find which skill covers something.
-version: 1.1.0
+version: 1.1.1
 library-compat: 1
 ---
 
@@ -34,7 +34,7 @@ Every repository gets all of this in its first pull request, unless it doesn't a
 | `.github/pull_request_template.md` | The same description headings in every repository |
 | A **Check** workflow | The Before pushing checks on every pull request, with no secrets |
 | **Secret protection** | Hooks that scan every commit and push, a CI scan of full history, and agents told to install the hooks before their first commit, from `secret-safety` |
-| The **release route**, if it deploys | From `release-manager`: Check, staging on merge, live on Publish release, the live Roll back, task comments, and the `live` environment ready for an approve button |
+| The **release route**, if it deploys | From `release-manager`: a staging workflow with Check, staging on merge and the one draft release, a live workflow that releases when the draft is published, the live Roll back, task comments, and the `live` environment ready for an approve button |
 | **Finish task on merge** | The playbook's caller, pinned to a release's full commit SHA, so a merge moves its task to done |
 | **Labels** | `major`, `minor` and `staging`, from `release-manager` |
 | **Deploy exclusions**, if it deploys | Development files kept out of the package, with a test that fails when a new one isn't excluded |
@@ -46,7 +46,7 @@ Every repository gets all of this in its first pull request, unless it doesn't a
 2. Add the release route and Finish task on merge, following `release-manager` and its `new-project-setup` reference.
 3. Open the pull request, with the labels added and the description following the template.
 4. Give the person the manual steps as numbered steps they can tick off: which settings, variables, secrets, environments and branch and tag protections to add, where, with exact names, and how they'll know each worked. Never ask for a secret's value.
-5. After it's merged, the first real change is released as `v1.0.0` from its merge's link.
+5. After it's merged, the first real change is released as `v1.0.0` by publishing the draft release its merge brought up to date.
 
 ## Keeping the index right
 

@@ -4,6 +4,18 @@ Each release says what changed, whether it's compatible, any configuration a cal
 
 ## Unreleased
 
+## 0.4.0 (2026-11-17)
+
+Compatible: callers change nothing. A project moves to the draft release by pinning this release and following the steps below.
+
+- **Added:** `scripts/release/release-draft.mjs`, the shared draft release step. After a merge reaches staging, it works out the next version, title and notes from everything merged since the live release, and creates or updates the repository's one draft release, targeting the staged commit. Each notes line reads `#N · Title · TaskID · what it does`, with the number linking to the pull request and the title to its task. Check on staging lists only each pull request's staging checks, renumbered, leaving out steps such as merging or publishing. The run summary and the merged pull request get one sentence with the draft's link, and the job's log prints it. It refuses to run without the environment and summary file it's handed, so tests never write to a real run summary. Node built-ins only, with tests.
+- **Changed:** `release-manager` 1.1.0: every merge keeps one draft release up to date, and the person publishes it to release to live. Releases go out from two workflows, `{Project} staging` (previews, merges and the Draft the release job) and `{Project} live` (the published release, the manual fallback and Roll back), with the same run names everywhere and one staging run at a time per pull request. New regression cases RC-RM16 to RC-RM19.
+- **Changed:** `project-scaffold` 1.1.1 describes the release route with the draft release and the two workflows.
+
+**Configuration:** to adopt the draft release, a project adds a Draft the release job to its staging workflow, after staging, that checks out the playbook at this release's commit (`sparse-checkout: scripts/release`) and runs `node scripts/release/release-draft.mjs` with `GITHUB_TOKEN`, `HEAD_SHA` and `STAGING_RUN_URL`, granting `contents: write` and `pull-requests: write`. Optional: `RELEASED_PATHS`, `FIRST_RELEASE_BASE`, `PRODUCT_NAME`. It moves its live job into a workflow of its own. See `workflow-blueprint.md` › The draft release step.
+
+**Rollback:** revert the caller's pin pull request, and its workflow change. A draft release left behind can be deleted from the releases page; it never reached live.
+
 ## 0.3.0 (2026-11-17)
 
 Compatible: callers change nothing. To use the new skills, pin this release's commit.

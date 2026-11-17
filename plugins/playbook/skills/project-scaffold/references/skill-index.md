@@ -41,7 +41,7 @@ Organisations may keep more skills of their own in a private config repository. 
 ## playbook:release-manager
 
 - **Use when:** opening or updating a pull request (labels), after a merge, preparing or explaining a release, an urgent fix or a roll back, or setting up a release route.
-- **Scaffold takes:** the whole release route, the labels, the version stamp, the live Roll back, the task comments, and the manual steps for environments and secrets.
+- **Scaffold takes:** the whole release route (the staging workflow with the one draft release, and the live workflow), the labels, the version stamp, the live Roll back, the task comments, and the manual steps for environments and secrets.
 - **Read first:**
   - `release-manager/references/new-project-setup.md` › 1. In the pull request
   - `release-manager/references/workflow-blueprint.md` › Jobs
