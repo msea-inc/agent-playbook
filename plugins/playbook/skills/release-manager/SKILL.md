@@ -1,7 +1,7 @@
 ---
 name: release-manager
 description: How to version, label, name and release work from merge to live - semantic versions chosen by what changes for the people who use it, a version label on every pull request, several merges batched into one release with grouped release notes, staging on merge and live only when the person publishes. Use when opening or updating a pull request, after a merge, when preparing or explaining a release, when something on live needs an urgent fix or a rollback, and when setting up the release route for a new repository.
-version: 1.0.1
+version: 1.0.2
 library-compat: 1
 ---
 
@@ -88,6 +88,7 @@ Once a release is live and its smoke checks pass, the workflow adds a comment to
 
 - **Keep the default branch releasable.** If something on live needs fixing while unchecked work is waiting on staging, don't release around it. Offer to revert the unready pull requests (each as its own revert pull request), merge the fix, release it as a patch, then bring the work back in a new pull request.
 - **Roll back button first, if live is broken now.** Every release workflow has a **Roll back** option, for live only: the person runs it, it puts back the backup the last release took (the version before it), runs the smoke checks, and records it on the releases page. The replaced release is renamed "Rolled back · …" and marked as a pre-release with a note, and the release that's live again is marked Latest. Its tag stays, so versions never go backwards. Point the person to it; never restore by hand over a server login.
+- **Roll back puts back the application, not the data.** Where the project keeps data that outlives a release, such as a database, roll back starts the previous version on today's data, and refuses when that version can't read it, for example after a schema change. Data is restored only through the project's documented recovery procedure, which the person starts with its own confirmation and which keeps the replaced data aside. Never restore data as part of a roll back.
 - **Staging has no roll back.** Redeploying the default branch fixes staging, so it keeps no backups.
 - **Then fix forward with a new patch.** Versions never go backwards, so the lasting undo is reverting the bad release's pull requests and releasing the result as the next patch, which replaces the rolled-back state on live.
 - **A release that failed to reach live** is still listed on the releases page. If the cause is fixed, re-run its run. Otherwise the person deletes that release and its tag, and publishes again from the latest merge's link.
@@ -95,6 +96,8 @@ Once a release is live and its smoke checks pass, the workflow adds a comment to
 ## Setting up a new project
 
 Every new repository that deploys anything gets this route from its first pull request, following `references/new-project-setup.md`, as part of the base that `project-scaffold` (in this plugin) sets up. Build it so that the person's future upgrade to GitHub's approve button (required reviewers on a protected environment) is a settings change, not a rewrite: give the live job its own `live` environment from day one, include the live Roll back option, and keep the version and notes in one script that can either build the link or create the release. `references/workflow-blueprint.md` explains both modes.
+
+When the project ships an immutable build, such as a container image, build it once per commit and send that exact build, by its digest, to staging and then to live. Never rebuild it for live. The version can be stamped when it's built or when it's deployed, whichever suits it: an image exists before its version does, so it carries its commit from the build and is given its version when it goes live.
 
 ## Never
 

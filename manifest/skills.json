@@ -1,6 +1,6 @@
 {
   "plugin": "playbook",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "skills": [
     {
       "id": "playbook:code-review",
@@ -45,16 +45,16 @@
     {
       "id": "playbook:release-manager",
       "name": "release-manager",
-      "version": "1.0.1",
+      "version": "1.0.2",
       "library_compat": 1,
       "files": {
-        "SKILL.md": "b4742a8201d97fa6b015a46a1d5572a2938513d82c5233c21714a90520933ad1",
-        "references/new-project-setup.md": "a9e2823692092a16b3d684d0e11cb2931f7e4ab087acca4f8f675d547124a28b",
+        "SKILL.md": "8e6850d242467b1f269167950d52ac5ec25ccd1f01bc71c8838c8fe787e9a9e9",
+        "references/new-project-setup.md": "80959a5e86f2d9721d5d8a443938e9946f412e66debd005bac8b9f0cadaf87f2",
         "references/versioning.md": "c1dfd6d997926fa784e8010bc05a9a97183177dc1c50959d083fd3f7eb3f0167",
-        "references/workflow-blueprint.md": "9f393ebe763f00fed63612ede8e68937aef17d65e6b350e6f3229cf566e18e5d",
-        "regression-cases.md": "376bedcac08eb7e4090c5561d25f2743c2d8e32faaedbb6fd41ea6128d4d5619"
+        "references/workflow-blueprint.md": "041dcb9cedbb7e570e9123fe695870cf5cf2b83ce30c389962c0218b1119b3e5",
+        "regression-cases.md": "46f964bff9c50883ae52db3c90f216524990f70916adad888dbadff76561ca2c"
       },
-      "sha256": "a7e6710187661cab25570b43fafc00936927871f74de696da39a01b5f03d4c63"
+      "sha256": "17a5e701c6c2539d8de60b2f0beb951356d1d73d2b0f1d22acdc3e5e7706c250"
     },
     {
       "id": "playbook:secret-safety",
