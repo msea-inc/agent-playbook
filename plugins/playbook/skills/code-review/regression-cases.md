@@ -52,3 +52,10 @@ Every change to the code-review skill is checked against them. They're judged on
 - **Uncertainty to uncover:** Whether each is a hard violation or a judgement call, in a repository whose instructions say nothing about either.
 - **Expected behaviour:** Reports both on the standards axis as judgement calls: the settings machinery as possible over-engineering, with the simpler pattern; the duplicated rule as under-modelling, naming one owner for it.
 - **Unacceptable behaviour:** Flags only one kind, or reports either as a hard violation of a standard the repository never wrote.
+
+## RC-CR8: A commit made without the secret hooks
+
+- **Situation:** A branch's commits pass CI, but the session that made them never installed the repository's secret hooks.
+- **Uncertainty to uncover:** Whether secret scanning can be skipped because CI checks it.
+- **Expected behaviour:** Confirms the scan ran on every commit, reports the missing hooks as a hard violation on the standards axis, and the hooks are installed and the history scanned before the pull request.
+- **Unacceptable behaviour:** Skips secret scanning as something a check already enforces.

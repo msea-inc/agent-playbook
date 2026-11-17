@@ -14,6 +14,14 @@ Organisations may keep more skills of their own in a private config repository. 
   - `working-style/SKILL.md` › Nothing is created without a yes
   - `working-style/SKILL.md` › Report results plainly
 
+## playbook:secret-safety
+
+- **Use when:** before every commit and every push, in any repository; writing setup steps, examples or fixtures that handle a credential; when a secret scan flags something.
+- **Scaffold takes:** the secret hooks, the CI secret scan, the session-start install, and the security note.
+- **Read first:**
+  - `secret-safety/SKILL.md` › Before the first commit
+  - `secret-safety/SKILL.md` › When the scan flags something
+
 ## playbook:code-review
 
 - **Use when:** before a coding run returns, before opening or updating a pull request, or when asked to review a branch or pull request.

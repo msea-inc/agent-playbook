@@ -1,7 +1,7 @@
 ---
 name: code-review
 description: Two-axis review of a change, against the repository's standards and against the task's acceptance criteria, reported separately. Use before a coding run returns, before opening or updating a pull request, or when the person asks to review a branch or pull request.
-version: 1.1.0
+version: 1.2.0
 library-compat: 1
 ---
 
@@ -43,7 +43,7 @@ On top of those, carry the smells in `references/smells.md` and the review check
 - **The repository wins.** Where a documented standard endorses something a smell would flag, don't flag it.
 - **Always a judgement call.** A smell or a design check is a possible problem ("possible feature envy"), never a hard violation, unless the repository documents the rule.
 
-Skip anything a check already enforces, such as the build, tests or secret scanning.
+Skip anything a check already enforces, such as the build or tests. Secret scanning is the exception: confirm it ran on every commit in the change, as `secret-safety` (in this plugin) says, and report a commit made without the repository's secret hooks as a hard violation.
 
 ## 4. Review each axis separately
 
