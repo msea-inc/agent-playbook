@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import { cpSync, mkdtempSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
-import { buildManifest, manifestDrift } from '../../scripts/skills/manifest.mjs';
+import { buildManifest, manifestDrift, manifestPathFor } from '../../scripts/skills/manifest.mjs';
 import { verifySkills, insidePlugin } from '../../scripts/skills/verify.mjs';
 import { loadReport } from '../../scripts/skills/load-report.mjs';
 
@@ -51,6 +51,16 @@ test('a manifest that no longer matches the files is reported, so CI fails until
   assert.deepEqual(manifestDrift(root, join(root, 'plugins/p')), []);
   writeFileSync(join(root, 'plugins/p/skills/style/SKILL.md'), '---\nname: style\ndescription: changed\nversion: 1.0.0\nlibrary-compat: 1\n---\n');
   assert.match(manifestDrift(root, join(root, 'plugins/p')).join(' '), /p:style/);
+});
+
+test('the playbook plugin keeps manifest/skills.json, and every other plugin gets its own manifest file', () => {
+  assert.equal(manifestPathFor('plugins/playbook'), 'manifest/skills.json');
+  assert.equal(manifestPathFor('plugins/playbook/'), 'manifest/skills.json');
+  assert.equal(manifestPathFor('plugins/coach'), 'manifest/coach.json');
+  const root = playbook();
+  assert.match(manifestDrift(root, join(root, 'plugins/p'), 'manifest/p.json').join(' '), /manifest\/p\.json is missing/);
+  writeFileSync(join(root, 'manifest/p.json'), `${JSON.stringify(buildManifest(join(root, 'plugins/p')), null, 2)}\n`);
+  assert.deepEqual(manifestDrift(root, join(root, 'plugins/p'), 'manifest/p.json'), []);
 });
 
 test('5: skills are verified on disk at the requested revision', () => {

@@ -4,6 +4,8 @@
 //
 //   node scripts/skills/manifest.mjs write [plugin folder]   regenerate manifest/skills.json
 //   node scripts/skills/manifest.mjs check [plugin folder]   fail if it's out of date
+//
+// The playbook plugin's manifest is manifest/skills.json. Any other plugin's is manifest/<plugin folder>.json.
 import { createHash } from 'node:crypto';
 import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import { join, relative, sep } from 'node:path';
@@ -12,6 +14,15 @@ import { frontmatter } from '../checks/plugin-audit.mjs';
 
 export const MANIFEST_PATH = 'manifest/skills.json';
 export const DEFAULT_PLUGIN = 'plugins/playbook';
+
+/**
+ * Where a plugin's manifest is committed. The playbook plugin keeps manifest/skills.json, which callers verify
+ * against; every other plugin in plugins/ gets its own file, manifest/<plugin folder>.json.
+ */
+export function manifestPathFor(pluginDir) {
+  const name = pluginDir.split(/[\\/]/).filter(Boolean).pop();
+  return name === DEFAULT_PLUGIN.split('/').pop() ? MANIFEST_PATH : `manifest/${name}.json`;
+}
 
 const sha256 = data => createHash('sha256').update(data).digest('hex');
 
@@ -45,9 +56,9 @@ export function buildManifest(pluginDir) {
 }
 
 /** What differs between the committed manifest and the files, as sentences. Empty when they match. */
-export function manifestDrift(root, pluginDir) {
-  const path = join(root, MANIFEST_PATH);
-  if (!existsSync(path)) return [`${MANIFEST_PATH} is missing. Run node scripts/skills/manifest.mjs write.`];
+export function manifestDrift(root, pluginDir, manifestPath = MANIFEST_PATH) {
+  const path = join(root, manifestPath);
+  if (!existsSync(path)) return [`${manifestPath} is missing. Run node scripts/skills/manifest.mjs write.`];
   const committed = JSON.parse(readFileSync(path, 'utf8'));
   const actual = buildManifest(pluginDir);
   const problems = [];
@@ -58,17 +69,18 @@ export function manifestDrift(root, pluginDir) {
     const b = actual.skills.find(skill => skill.id === id);
     if (JSON.stringify(a) !== JSON.stringify(b)) problems.push(`${id} ${!a ? 'is new' : !b ? 'was removed' : 'changed'}`);
   }
-  return problems.length ? [`${MANIFEST_PATH} is out of date: ${problems.join('; ')}. Run node scripts/skills/manifest.mjs write and commit it.`] : [];
+  return problems.length ? [`${manifestPath} is out of date: ${problems.join('; ')}. Run node scripts/skills/manifest.mjs write and commit it.`] : [];
 }
 
 if (import.meta.url === pathToFileURL(process.argv[1] ?? '').href) {
   const [mode, pluginDir = DEFAULT_PLUGIN] = process.argv.slice(2);
+  const manifestPath = manifestPathFor(pluginDir);
   if (mode === 'write') {
     mkdirSync('manifest', { recursive: true });
-    writeFileSync(MANIFEST_PATH, `${JSON.stringify(buildManifest(pluginDir), null, 2)}\n`);
-    console.log(`Wrote ${MANIFEST_PATH}.`);
+    writeFileSync(manifestPath, `${JSON.stringify(buildManifest(pluginDir), null, 2)}\n`);
+    console.log(`Wrote ${manifestPath}.`);
   } else if (mode === 'check') {
-    const problems = manifestDrift('.', pluginDir);
+    const problems = manifestDrift('.', pluginDir, manifestPath);
     for (const problem of problems) console.error(`::error::${problem}`);
     if (problems.length) process.exit(1);
     console.log('The skills manifest matches the files.');

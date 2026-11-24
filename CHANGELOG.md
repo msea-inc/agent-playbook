@@ -4,6 +4,9 @@ Each release says what changed, whether it's compatible, any configuration a cal
 
 ## Unreleased
 
+- **Added:** the `trading-coach` plugin, beside `playbook`, for generic methods an agent uses to coach a trader. Its first skill, `trade-reviews`, runs the review of one trade: always before that day's daily review and never folded into it, in about six short conversational rounds in plain language, star ratings for Entry, Exit, Risk Management, Trade Management and Discipline, and a note template with no overview section. Every review ends with four save steps, each shown to the trader and saved only after their yes: the strategy (asking when unsure), the tags, the trade note, and the ratings table with the stop and target for the trader to enter by hand. Agreed rules go to the project's rules log the same turn. The trader's own rules and details stay in their private project files.
+- **Changed:** `scripts/skills/manifest.mjs` takes any plugin folder: the playbook keeps `manifest/skills.json`, and another plugin's manifest is `manifest/<plugin folder>.json`. CI checks both.
+
 ## 0.3.0 (2026-11-17)
 
 Compatible: callers change nothing. To use the new skills, pin this release's commit.
