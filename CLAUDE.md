@@ -5,6 +5,7 @@ This repository is **public**. It holds generic methods that agents use in any p
 ## What may go here
 
 - **Only generic methods.** No project code, project names, customer details, task text, run evidence, repository findings, list or space IDs, or secrets. Projects keep their own conventions in their own repositories, and the organisation's configuration stays in its private config repository.
+- **Plugins:** `plugins/playbook` holds methods for any project. `plugins/trading-coach` holds generic methods for coaching a trader; a trader's own rules, levels, strategies, tags and accounts stay in their private project files, which its skills tell the agent to read.
 - **Fixtures and examples are synthetic**, and say so in their first lines.
 - **Never put a secret anywhere**, including tests. Push protection and the content check are there to catch mistakes, not to make them safe: a secret that lands here is revoked at once.
 
@@ -32,9 +33,10 @@ node scripts/checks/public-content.mjs pins
 node scripts/checks/public-content.mjs merges
 node scripts/checks/plugin-audit.mjs
 node scripts/skills/manifest.mjs check
+node scripts/skills/manifest.mjs check plugins/trading-coach
 node scripts/skills/index-check.mjs
 ```
 
-After changing anything under `plugins/`, regenerate the manifest with `node scripts/skills/manifest.mjs write` and commit it. A new skill, or a renamed section that the skill index points at, needs its entry in `plugins/playbook/skills/project-scaffold/references/skill-index.md` updated in the same pull request; the unit tests run the index check too.
+After changing anything under `plugins/`, regenerate the manifest with `node scripts/skills/manifest.mjs write` and commit it. For the `trading-coach` plugin, add its folder: `node scripts/skills/manifest.mjs write plugins/trading-coach` writes `manifest/trading-coach.json`. A new skill, or a renamed section that the skill index points at, needs its entry in `plugins/playbook/skills/project-scaffold/references/skill-index.md` updated in the same pull request; the unit tests run the index check too.
 
 CI runs the same checks, plus `pr-text` on the PR's description and commits.

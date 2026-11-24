@@ -25,6 +25,8 @@ jobs:
         run: node scripts/checks/plugin-audit.mjs
       - name: The skills manifest matches the files
         run: node scripts/skills/manifest.mjs check
+      - name: The trading-coach manifest matches the files
+        run: node scripts/skills/manifest.mjs check plugins/trading-coach
 
   public-content:
     runs-on: ubuntu-latest

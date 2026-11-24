@@ -1,0 +1,18 @@
+{
+  "plugin": "trading-coach",
+  "version": "0.1.0",
+  "skills": [
+    {
+      "id": "trading-coach:trade-reviews",
+      "name": "trade-reviews",
+      "version": "1.0.0",
+      "library_compat": 1,
+      "files": {
+        "SKILL.md": "c53668fb14fad744c3f4c92c0bdc9c55028ae18b602658d5e9714801cc11eabc",
+        "references/note-template.md": "c570372d5a62b43c1ebc08910564a9eed6151ec2b26cae93b9ca469b7ba3c1af",
+        "regression-cases.md": "d145dfb4ca0026eed6136cf4e40996587cef7d6f280a90fedc2165ab4543a65c"
+      },
+      "sha256": "c89e01c0dd6459e73c9edb1a9a7f52e945ea5db07a08b00f1f0c08c47c4e9921"
+    }
+  ]
+}

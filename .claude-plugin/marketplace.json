@@ -6,6 +6,11 @@
       "name": "playbook",
       "source": "./plugins/playbook",
       "description": "Generic methods agents use in any project."
+    },
+    {
+      "name": "trading-coach",
+      "source": "./plugins/trading-coach",
+      "description": "Generic methods an agent uses to coach a trader: reviewing trades and saving them to a trading journal."
     }
   ]
 }
